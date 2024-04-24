@@ -3,46 +3,49 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 import matplotlib.figure
 
 import RandomDatasetCreator
+import numpy as np
+
+from scipy.optimize import curve_fit
 
 
 class SubTabs(QtWidgets.QTabWidget):
-    def __init__(self):
+    def __init__(self, show_graphs):
         super().__init__()
-
-        subtab1 = QtWidgets.QWidget()
-        layout1 = QtWidgets.QVBoxLayout()
-        static_canvas1 = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
-        layout1.addWidget(static_canvas1)
-        static_ax1 = static_canvas1.figure.subplots()
-        x_dataset, y_dataset = RandomDatasetCreator.createRandomDataset()
-        static_ax1.plot(x_dataset, y_dataset)
-        subtab1.setLayout(layout1)
-
-        subtab2 = QtWidgets.QWidget()
-        layout2 = QtWidgets.QVBoxLayout()
-        static_canvas2 = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
-        layout2.addWidget(static_canvas2)
-        static_ax2 = static_canvas2.figure.subplots()
-        x_dataset, y_dataset = RandomDatasetCreator.createRandomDataset()
-        static_ax2.plot(x_dataset, y_dataset)
-        subtab2.setLayout(layout2)
-
-        subtab3 = QtWidgets.QWidget()
-        layout3 = QtWidgets.QVBoxLayout()
-        static_canvas3 = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
-        layout3.addWidget(static_canvas3)
-        static_ax3 = static_canvas3.figure.subplots()
-        x_dataset, y_dataset = RandomDatasetCreator.createRandomDataset()
-        static_ax3.plot(x_dataset, y_dataset)
-        subtab3.setLayout(layout3)
-
         self.subtabs = []
-        self.subtabs.append(subtab1)
-        self.subtabs.append(subtab2)
-        self.subtabs.append(subtab3)
+        x_dataset, y_dataset, y_fit = RandomDatasetCreator.createRandomDataset()
 
-        self.addTab(subtab1, "1")
-        self.addTab(subtab2, "2")
-        self.addTab(subtab3, "3")
+        if show_graphs[0]:
+            subtab_data = QtWidgets.QWidget()
+            layout_data = QtWidgets.QVBoxLayout()
+            static_canvas_data = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
+            layout_data.addWidget(static_canvas_data)
+            static_ax_data = static_canvas_data.figure.subplots()
+            static_ax_data.plot(x_dataset, y_dataset)
+            subtab_data.setLayout(layout_data)
+            self.subtabs.append(subtab_data)
+            self.addTab(subtab_data, "Data")
 
+        if show_graphs[1]:
+            subtab_fit = QtWidgets.QWidget()
+            layout_fit = QtWidgets.QVBoxLayout()
+            static_canvas_fit = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
+            layout_fit.addWidget(static_canvas_fit)
+            static_ax_fit = static_canvas_fit.figure.subplots()
+            static_ax_fit.plot(x_dataset, y_dataset)
+            static_ax_fit.plot(x_dataset, y_fit)
+            subtab_fit.setLayout(layout_fit)
+            self.subtabs.append(subtab_fit)
+            self.addTab(subtab_fit, "Fit")
 
+        if show_graphs[2]:
+            subtab_residuals = QtWidgets.QWidget()
+            layout_residuals = QtWidgets.QVBoxLayout()
+            static_canvas_residuals = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
+            layout_residuals.addWidget(static_canvas_residuals)
+            static_ax_residuals = static_canvas_residuals.figure.subplots()
+            static_ax_residuals.plot(x_dataset, y_dataset)
+            static_ax_residuals.plot(x_dataset, y_fit)
+            static_ax_residuals.plot(x_dataset, np.subtract(y_dataset, y_fit))
+            subtab_residuals.setLayout(layout_residuals)
+            self.subtabs.append(subtab_residuals)
+            self.addTab(subtab_residuals, "Residuals")

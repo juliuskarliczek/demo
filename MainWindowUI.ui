@@ -27,6 +27,61 @@
      <string>Create Plot</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="cbData">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>90</y>
+      <width>120</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot Data</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cbFit">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>120</y>
+      <width>120</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot Fit</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cbResiduals">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>150</y>
+      <width>120</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Plot Residuals</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelWarning">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>180</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select atleast one box</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::RichText</enum>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
