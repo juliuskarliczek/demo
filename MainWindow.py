@@ -14,6 +14,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.setWindowTitle("Tabbed Plot Demo")
 
+        self.setMinimumSize(500, 500)
+
         self.cmdCreatePlot.clicked.connect(self.onCreatePlot)
 
         self.pl = None
