@@ -1,12 +1,13 @@
 import numpy as np
 from scipy.optimize import curve_fit
 
+
 def func(x, a, b, c):
     return a * np.exp(b * x) + c
-def createRandomDataset():
+
+
+def createRandomDataset(a, b):
     dataset_length = np.random.randint(100)
-    a = np.random.random()
-    b = np.random.random()
 
     x_sample = np.linspace(start=0, stop=10, num=500)
     y_sample = np.empty(shape=500)

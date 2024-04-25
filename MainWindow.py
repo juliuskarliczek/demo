@@ -20,10 +20,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.cmdCreatePlot.clicked.connect(self.onCreatePlot)
         self.actionNewFitPage.triggered.connect(self.onActionNewFitPage)
-
-        self.newFitPage = FitPage()
-        self.fittingTabs.addTab(self.newFitPage, "Fit Page 1")
         self.fitPageCounter = 1
+        self.newFitPage = FitPage(int_identifier=self.fitPageCounter)
+        self.fittingTabs.addTab(self.newFitPage, "Fit Page "+str(self.fitPageCounter))
         self.labelWarning.hide()
 
         self.pl = None
@@ -34,10 +33,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.labelWarning.show()
             return
         self.labelWarning.hide()
+
+        int_identifier_parameter = self.fittingTabs.currentWidget().get_int_identifier()
+        param_a = self.fittingTabs.currentWidget().doubleSpinBox_a.value()
+        param_b = self.fittingTabs.currentWidget().doubleSpinBox_b.value()
         if self.pl is None:
-            self.pl = PlotWidget(show_graphs)
+            self.pl = PlotWidget(param_a, param_b, show_graphs, int_identifier_parameter)
         else:
-            self.pl.createNewTab(show_graphs)
+            self.pl.createNewTab(param_a, param_b, show_graphs, int_identifier_parameter)
 
         if not self.pl.isVisible:
             pass
@@ -47,9 +50,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pl.activateWindow()
 
     def onActionNewFitPage(self):
-        self.newFitPage = FitPage()
         self.fitPageCounter += 1
+        self.newFitPage = FitPage(self.fitPageCounter)
         self.fittingTabs.addTab(self.newFitPage, "Fit Page " + str(self.fitPageCounter))
+        self.fittingTabs.setCurrentIndex(self.fitPageCounter-1)
 
 
 app = QtWidgets.QApplication(sys.argv)
