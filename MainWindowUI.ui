@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>700</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QPushButton" name="cmdCreatePlot">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>48</y>
-      <width>125</width>
+      <x>570</x>
+      <y>630</y>
+      <width>121</width>
       <height>24</height>
      </rect>
     </property>
@@ -30,8 +30,8 @@
    <widget class="QCheckBox" name="cbData">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>90</y>
+      <x>570</x>
+      <y>510</y>
       <width>120</width>
       <height>20</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QCheckBox" name="cbFit">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>120</y>
+      <x>570</x>
+      <y>540</y>
       <width>120</width>
       <height>20</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QCheckBox" name="cbResiduals">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>150</y>
+      <x>570</x>
+      <y>570</y>
       <width>120</width>
       <height>20</height>
      </rect>
@@ -69,8 +69,8 @@
    <widget class="QLabel" name="labelWarning">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>180</y>
+      <x>570</x>
+      <y>590</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -82,18 +82,43 @@
      <enum>Qt::RichText</enum>
     </property>
    </widget>
+   <widget class="QTabWidget" name="fittingTabs">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>681</width>
+      <height>471</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>-1</number>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>700</width>
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFitPages">
+    <property name="title">
+     <string>Fit Pages</string>
+    </property>
+    <addaction name="actionNewFitPage"/>
+   </widget>
+   <addaction name="menuFitPages"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNewFitPage">
+   <property name="text">
+    <string>New Fit Page</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

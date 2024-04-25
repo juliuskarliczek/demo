@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 
 from MainWindowUI import Ui_MainWindow
 from PlotWidget import PlotWidget
+from FitPage import FitPage
 
 from RandomDatasetCreator import createRandomDataset
 
@@ -18,6 +19,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setMinimumSize(700, 700)
 
         self.cmdCreatePlot.clicked.connect(self.onCreatePlot)
+        self.actionNewFitPage.triggered.connect(self.onActionNewFitPage)
+
+        self.newFitPage = FitPage()
+        self.fittingTabs.addTab(self.newFitPage, "Fit Page 1")
+        self.fitPageCounter = 1
         self.labelWarning.hide()
 
         self.pl = None
@@ -39,6 +45,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.pl.show()
 
         self.pl.activateWindow()
+
+    def onActionNewFitPage(self):
+        self.newFitPage = FitPage()
+        self.fitPageCounter += 1
+        self.fittingTabs.addTab(self.newFitPage, "Fit Page " + str(self.fitPageCounter))
+
 
 app = QtWidgets.QApplication(sys.argv)
 
