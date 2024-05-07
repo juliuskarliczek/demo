@@ -1,6 +1,5 @@
 import sys
-from PyQt6 import QtWidgets, uic
-from PyQt6.QtCore import Qt
+from PyQt6 import QtWidgets
 
 from MainWindowUI import Ui_MainWindow
 from PlotWidget import PlotWidget
@@ -35,12 +34,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.labelWarning.hide()
 
         int_identifier_parameter = self.fittingTabs.currentWidget().get_int_identifier()
-        param_a = self.fittingTabs.currentWidget().doubleSpinBox_a.value()
-        param_b = self.fittingTabs.currentWidget().doubleSpinBox_b.value()
+        param_scale = self.fittingTabs.currentWidget().doubleSpinBox_scale.value()
+        param_radius = self.fittingTabs.currentWidget().doubleSpinBox_radius.value()
         if self.pl is None:
-            self.pl = PlotWidget(param_a, param_b, show_graphs, int_identifier_parameter)
+            self.pl = PlotWidget(param_scale, param_radius, show_graphs, int_identifier_parameter)
         else:
-            self.pl.createNewTab(param_a, param_b, show_graphs, int_identifier_parameter)
+            self.pl.createNewTab(param_scale, param_radius, show_graphs, int_identifier_parameter)
 
         if not self.pl.isVisible:
             pass

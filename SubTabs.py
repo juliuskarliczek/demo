@@ -5,14 +5,11 @@ import matplotlib.figure
 import RandomDatasetCreator
 import numpy as np
 
-from scipy.optimize import curve_fit
-
-
 class SubTabs(QtWidgets.QTabWidget):
-    def __init__(self, param_a, param_b, show_graphs):
+    def __init__(self, param_scale, param_radius, show_graphs):
         super().__init__()
         self.subtabs = []
-        x_dataset, y_dataset, y_fit = RandomDatasetCreator.createRandomDataset(param_a, param_b)
+        x_dataset, y_dataset, y_fit = RandomDatasetCreator.createRandomDataset(param_scale, param_radius)
 
         if show_graphs[0]:
             subtab_data = QtWidgets.QWidget()
@@ -21,6 +18,8 @@ class SubTabs(QtWidgets.QTabWidget):
             layout_data.addWidget(static_canvas_data)
             static_ax_data = static_canvas_data.figure.subplots()
             static_ax_data.plot(x_dataset, y_dataset)
+            static_ax_data.set_xscale('log')
+            static_ax_data.set_yscale('log')
             subtab_data.setLayout(layout_data)
             self.subtabs.append(subtab_data)
             self.addTab(subtab_data, "Data")
@@ -33,6 +32,8 @@ class SubTabs(QtWidgets.QTabWidget):
             static_ax_fit = static_canvas_fit.figure.subplots()
             static_ax_fit.plot(x_dataset, y_dataset)
             static_ax_fit.plot(x_dataset, y_fit)
+            static_ax_fit.set_xscale('log')
+            static_ax_fit.set_yscale('log')
             subtab_fit.setLayout(layout_fit)
             self.subtabs.append(subtab_fit)
             self.addTab(subtab_fit, "Fit")
@@ -47,6 +48,9 @@ class SubTabs(QtWidgets.QTabWidget):
             static_ax_residuals.set_ylabel("fit")
             static_ax_residuals.plot(x_dataset, y_dataset, color='tab:brown')
             static_ax_residuals.plot(x_dataset, y_fit, color='tab:blue')
+
+            static_ax_residuals.set_xscale('log')
+            static_ax_residuals.set_yscale('log')
 
             static_ax_lin_scale = static_ax_residuals.twinx()
             static_ax_lin_scale.set_ylabel("residuals")

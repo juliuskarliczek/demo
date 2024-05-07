@@ -13,39 +13,39 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox_a">
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_scale">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>40</y>
+     <x>80</x>
+     <y>100</y>
      <width>62</width>
      <height>22</height>
     </rect>
    </property>
    <property name="minimum">
-    <double>-5.000000000000000</double>
+    <double>0.000000000000000</double>
    </property>
    <property name="maximum">
-    <double>5.000000000000000</double>
+    <double>1000.000000000000000</double>
    </property>
    <property name="value">
     <double>1.000000000000000</double>
    </property>
   </widget>
-  <widget class="QDoubleSpinBox" name="doubleSpinBox_b">
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_radius">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>80</y>
+     <x>80</x>
+     <y>130</y>
      <width>62</width>
      <height>22</height>
     </rect>
    </property>
    <property name="minimum">
-    <double>-5.000000000000000</double>
+    <double>0.000000000000000</double>
    </property>
    <property name="maximum">
-    <double>5.000000000000000</double>
+    <double>1000.000000000000000</double>
    </property>
    <property name="value">
     <double>1.000000000000000</double>
@@ -55,39 +55,81 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>40</y>
-     <width>16</width>
+     <y>100</y>
+     <width>51</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>A</string>
+    <string>Scale</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_b">
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>80</y>
-     <width>16</width>
+     <y>130</y>
+     <width>51</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>B</string>
+    <string>Radius</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_equation">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>161</width>
+     <x>20</x>
+     <y>70</y>
+     <width>211</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>Parameters for f(x)=a*exp(b*x)</string>
+    <string>Parameters for scattering function P(q)</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBoxFormFactor">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>171</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="doubleSpinBox_height">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>160</y>
+     <width>62</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <double>0.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>1000.000000000000000</double>
+   </property>
+   <property name="value">
+    <double>1.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_c">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>160</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Height</string>
    </property>
   </widget>
  </widget>
