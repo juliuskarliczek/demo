@@ -5,8 +5,8 @@ from scipy import special
 
 
 class DatasetCreator:
-    def __init__(self, combobox_index):
-        self.combobox_index = combobox_index
+    def __init__(self):
+        self.combobox_index = -1
 
     def func(self, q, scale, radius, height):
         if self.combobox_index == 0:
@@ -16,7 +16,8 @@ class DatasetCreator:
             volume = height * np.pi * radius**2
             return 4 * scale * volume * (special.jv(1, q*radius))**2 / (q*radius)**2
 
-    def createRandomDataset(self, scale, radius, height):
+    def createRandomDataset(self, scale, radius, height, combobox_index):
+        self.combobox_index = combobox_index
         length = 4999
         q_sample = np.linspace(start=1, stop=100, num=length)
         y_sample = np.empty(shape=length)

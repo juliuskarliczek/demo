@@ -1,37 +1,40 @@
 from PyQt6 import QtWidgets
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-import matplotlib.figure
-
 from SubTabs import SubTabs
 
 class PlotWidget(QtWidgets.QTabWidget):
-    def __init__(self, param_scale, param_radius, param_height, show_graphs, int_identifier, combobox_index):
-        #for serializing the tabs: e.g. fitpage 5 has tab index 0, because its fitted first
+    def __init__(self, data_collector, fitpage_index):
         self.tabs_index = 0
-        self.int_identifiers = {}
 
         super().__init__()
         self.setMinimumSize(600, 600)
         self.tabs = []
-        self.createNewTab(param_scale, param_radius, param_height, show_graphs, int_identifier, combobox_index)
+        self.createNewTab(data_collector, fitpage_index)
 
-    def createNewTab(self, param_scale, param_radius, param_height, show_graphs, int_identifier, combobox_index):
+    def createNewTab(self, data_collector, fitpage_index):
         #check if the tab is already existing. if its not existing: create it. otherwise: change to the index of the tab
-        if not (int_identifier in self.int_identifiers):
-            #for serializing the tabs with respect to the fitting pages
-            self.int_identifiers.update({int_identifier: self.tabs_index})
-
+        plot_index = data_collector.get_plot_index(fitpage_index)
+        if plot_index == -1:
+            data_collector.set_plot_index(fitpage_index, self.tabs_index)
             #create new plotpage
             newTab = QtWidgets.QWidget()
             layout = QtWidgets.QVBoxLayout(newTab)
-            layout.addWidget(SubTabs(param_scale, param_radius, param_height, show_graphs, combobox_index))
+            layout.addWidget(SubTabs(data_collector, fitpage_index))
             newTab.setLayout(layout)
-
             #add created plot page to the widget, keep it in the list of tabs to keep track
             self.tabs.append(newTab)
-            self.addTab(self.tabs[self.tabs_index], "Plot for FitPage "+str(int_identifier))
+            self.addTab(self.tabs[self.tabs_index], "Plot for FitPage "+str(fitpage_index))
             self.setCurrentIndex(self.tabs_index)
             self.tabs_index += 1
         else:
-            #show the already existing tab
-            self.setCurrentIndex(self.int_identifiers[int_identifier])
+            #show the already existing tab and check if values have changed. if values changed: recalculate
+            self.removeTab(plot_index)
+
+            recalculatedTab = QtWidgets.QWidget()
+            layout = QtWidgets.QVBoxLayout(recalculatedTab)
+            layout.addWidget(SubTabs(data_collector, fitpage_index))
+            recalculatedTab.setLayout(layout)
+
+            self.tabs[plot_index] = recalculatedTab
+            self.insertTab(plot_index, self.tabs[plot_index], "Plot for FitPage "+str(fitpage_index))
+            self.setCurrentIndex(plot_index)
+

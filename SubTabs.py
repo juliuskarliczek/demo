@@ -6,11 +6,14 @@ import RandomDatasetCreator
 import numpy as np
 
 class SubTabs(QtWidgets.QTabWidget):
-    def __init__(self, param_scale, param_radius, param_height, show_graphs, combobox_index):
+    def __init__(self, data_collector, fitpage_index):
         super().__init__()
+
         self.subtabs = []
-        datasetcreator = RandomDatasetCreator.DatasetCreator(combobox_index)
-        x_dataset, y_dataset, y_fit = datasetcreator.createRandomDataset(param_scale, param_radius, param_height)
+        x_dataset = data_collector.get_x_data(fitpage_index)
+        y_dataset = data_collector.get_y_data(fitpage_index)
+        y_fit = data_collector.get_y_fit_data(fitpage_index)
+        show_graphs = data_collector.get_show_graphs(fitpage_index)
 
         if show_graphs[0]:
             subtab_data = QtWidgets.QWidget()
