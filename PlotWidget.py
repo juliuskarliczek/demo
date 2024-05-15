@@ -6,6 +6,7 @@ class PlotWidget(QtWidgets.QTabWidget):
         self.tabs_index = 0
 
         super().__init__()
+        self.setWindowTitle("Plot Widget")
         self.setMinimumSize(600, 600)
         self.tabs = []
         self.createNewTab(data_collector, fitpage_index)

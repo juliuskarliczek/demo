@@ -13,6 +13,12 @@ class Ui_DataViewer(object):
     def setupUi(self, DataViewer):
         DataViewer.setObjectName("DataViewer")
         DataViewer.resize(400, 300)
+        self.datasetList = QtWidgets.QListWidget(parent=DataViewer)
+        self.datasetList.setGeometry(QtCore.QRect(10, 10, 256, 192))
+        self.datasetList.setObjectName("datasetList")
+        self.cmdSendToPlotpage = QtWidgets.QPushButton(parent=DataViewer)
+        self.cmdSendToPlotpage.setGeometry(QtCore.QRect(280, 10, 101, 24))
+        self.cmdSendToPlotpage.setObjectName("cmdSendToPlotpage")
 
         self.retranslateUi(DataViewer)
         QtCore.QMetaObject.connectSlotsByName(DataViewer)
@@ -20,3 +26,4 @@ class Ui_DataViewer(object):
     def retranslateUi(self, DataViewer):
         _translate = QtCore.QCoreApplication.translate
         DataViewer.setWindowTitle(_translate("DataViewer", "Form"))
+        self.cmdSendToPlotpage.setText(_translate("DataViewer", "Send to Plotpage"))

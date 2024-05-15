@@ -1,5 +1,6 @@
 from PyQt6 import QtWidgets
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 import matplotlib.figure
 
 import RandomDatasetCreator
@@ -20,6 +21,7 @@ class SubTabs(QtWidgets.QTabWidget):
             layout_data = QtWidgets.QVBoxLayout()
             static_canvas_data = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 2.5)))
             layout_data.addWidget(static_canvas_data)
+            layout_data.addWidget(NavigationToolbar2QT(static_canvas_data))
             static_ax_data = static_canvas_data.figure.subplots()
             static_ax_data.plot(x_dataset, y_dataset)
             static_ax_data.set_xscale('log')
@@ -33,6 +35,7 @@ class SubTabs(QtWidgets.QTabWidget):
             layout_fit = QtWidgets.QVBoxLayout()
             static_canvas_fit = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
             layout_fit.addWidget(static_canvas_fit)
+            layout_fit.addWidget(NavigationToolbar2QT(static_canvas_fit))
             static_ax_fit = static_canvas_fit.figure.subplots()
             static_ax_fit.plot(x_dataset, y_dataset)
             static_ax_fit.plot(x_dataset, y_fit)
@@ -48,6 +51,7 @@ class SubTabs(QtWidgets.QTabWidget):
             fig_residuals = matplotlib.figure.Figure(figsize=(3, 3))
             static_canvas_residuals = FigureCanvasQTAgg(fig_residuals)
             layout_residuals.addWidget(static_canvas_residuals)
+            layout_residuals.addWidget(NavigationToolbar2QT(static_canvas_residuals))
             static_ax_residuals = static_canvas_residuals.figure.subplots()
             static_ax_residuals.set_ylabel("fit")
             static_ax_residuals.plot(x_dataset, y_dataset, color='tab:brown')
