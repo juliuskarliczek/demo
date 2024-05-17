@@ -34,7 +34,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.datacollector.update_dataset(self, fitpage_index)
         show_graphs = self.datacollector.get_show_graphs(fitpage_index)
 
-        print(self.datacollector.datasets[0][2][50])
         if not (show_graphs[0] or show_graphs[1] or show_graphs[2]):
             self.labelWarning.show()
             return
@@ -64,12 +63,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.dataviewer.isVisible():
             self.dataviewer.hide()
             self.cmdShowDataViewer.setText("Show Data Viewer")
+            self.dataviewer.datasetList.setCurrentRow(0)
         else:
             self.dataviewer.show()
             self.cmdShowDataViewer.setText("Hide Data Viewer")
+            self.dataviewer.datasetList.setCurrentRow(0)
 
     def closeEvent(self, event):
         sys.exit()
+
+    def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
+        if self.pl != None:
+            self.pl.send_data_to_subtab(fitpage_from, fitpage_to, subtab_index)
+        else:
+            pass
 
 
 app = QtWidgets.QApplication(sys.argv)

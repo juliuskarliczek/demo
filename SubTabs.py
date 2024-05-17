@@ -10,6 +10,8 @@ class SubTabs(QtWidgets.QTabWidget):
     def __init__(self, data_collector, fitpage_index):
         super().__init__()
 
+        self.datacollector = data_collector
+        self.fitpage_index = fitpage_index
         self.subtabs = []
         x_dataset = data_collector.get_x_data(fitpage_index)
         y_dataset = data_collector.get_y_data(fitpage_index)
@@ -67,3 +69,36 @@ class SubTabs(QtWidgets.QTabWidget):
             subtab_residuals.setLayout(layout_residuals)
             self.subtabs.append(subtab_residuals)
             self.addTab(subtab_residuals, "Residuals")
+
+
+    def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):
+        #from_fitpage is the fitpage that the data originates from
+        #to_fitpage is the plotpage for the fitpage thats supposed to display the additional data
+        dataset_from_fitpage = self.datacollector.get_data_by_fitpage_index(from_fitpage_index)
+        dataset_to_fitpage = self.datacollector.get_data_by_fitpage_index(to_fitpage_index)
+        self.removeTab(which_subtab)
+
+        adjustedtab = QtWidgets.QWidget()
+        layout_adjusted = QtWidgets.QVBoxLayout()
+        fig_adjusted = matplotlib.figure.Figure(figsize=(3, 3))
+        static_canvas_adjusted = FigureCanvasQTAgg(fig_adjusted)
+        layout_adjusted.addWidget(static_canvas_adjusted)
+        layout_adjusted.addWidget(NavigationToolbar2QT(static_canvas_adjusted))
+        static_ax_adjusted = static_canvas_adjusted.figure.subplots()
+        static_ax_adjusted.set_ylabel("data")
+
+        static_ax_adjusted.set_xscale('log')
+        static_ax_adjusted.set_yscale('log')
+
+        x_dataset = self.datacollector.get_x_data(from_fitpage_index)
+        y_dataset = self.datacollector.get_y_data(from_fitpage_index)
+        y_fit = self.datacollector.get_y_fit_data(from_fitpage_index)
+        show_graphs = self.datacollector.get_show_graphs(from_fitpage_index)
+
+        static_ax_adjusted.plot(x_dataset, y_dataset, color='tab:brown')
+        static_ax_adjusted.plot(x_dataset, y_fit, color='tab:blue')
+
+        adjustedtab.setLayout(layout_adjusted)
+
+        self.insertTab(which_subtab, adjustedtab, "Adjusted Subtab")
+

@@ -21,9 +21,7 @@ class FitPage(QtWidgets.QWidget, Ui_fitPageWidget):
         return self.comboBoxFormFactor.currentIndex()
 
     def index_changed(self, selected_item):
-        print(str(selected_item))
         if selected_item == 0:
             self.doubleSpinBox_height.setDisabled(True)
         elif selected_item == 1:
             self.doubleSpinBox_height.setDisabled(False)
-

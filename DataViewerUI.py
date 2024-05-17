@@ -19,6 +19,12 @@ class Ui_DataViewer(object):
         self.cmdSendToPlotpage = QtWidgets.QPushButton(parent=DataViewer)
         self.cmdSendToPlotpage.setGeometry(QtCore.QRect(280, 10, 101, 24))
         self.cmdSendToPlotpage.setObjectName("cmdSendToPlotpage")
+        self.labelSelectAnItem = QtWidgets.QLabel(parent=DataViewer)
+        self.labelSelectAnItem.setGeometry(QtCore.QRect(10, 210, 91, 16))
+        self.labelSelectAnItem.setObjectName("labelSelectAnItem")
+        self.cmdClose = QtWidgets.QPushButton(parent=DataViewer)
+        self.cmdClose.setGeometry(QtCore.QRect(320, 270, 75, 24))
+        self.cmdClose.setObjectName("cmdClose")
 
         self.retranslateUi(DataViewer)
         QtCore.QMetaObject.connectSlotsByName(DataViewer)
@@ -27,3 +33,5 @@ class Ui_DataViewer(object):
         _translate = QtCore.QCoreApplication.translate
         DataViewer.setWindowTitle(_translate("DataViewer", "Form"))
         self.cmdSendToPlotpage.setText(_translate("DataViewer", "Send to Plotpage"))
+        self.labelSelectAnItem.setText(_translate("DataViewer", "No item selected"))
+        self.cmdClose.setText(_translate("DataViewer", "Close"))

@@ -95,3 +95,6 @@ class DataCollector:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i][0]:
                 self.datasets[i][4] = show_graphs
+
+    def get_datasets(self):
+        return self.datasets
