@@ -16,18 +16,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle("Tabbed Plot Demo")
         self.setMinimumSize(700, 700)
 
+        self.datacollector = DataCollector()
+        self.pl = None
+
         self.cmdCreatePlot.clicked.connect(self.onCreatePlot)
-        self.cmdShowDataViewer.clicked.connect(self.onShowDataViewer)
         self.actionNewFitPage.triggered.connect(self.onActionNewFitPage)
         self.fitPageCounter = 1
         self.newFitPage = FitPage(int_identifier=self.fitPageCounter)
         self.fittingTabs.addTab(self.newFitPage, "Fit Page "+str(self.fitPageCounter))
         self.labelWarning.hide()
 
-        self.datacollector = DataCollector()
         self.dataviewer = DataViewer(self)
-        self.pl = None
-
+        self.cmdShowDataViewer.clicked.connect(self.dataviewer.onShowDataViewer)
 
     def onCreatePlot(self):
         fitpage_index = self.fittingTabs.currentWidget().get_int_identifier()
@@ -57,23 +57,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.fittingTabs.addTab(self.newFitPage, "Fit Page " + str(self.fitPageCounter))
         self.fittingTabs.setCurrentIndex(self.fitPageCounter-1)
 
-    def onShowDataViewer(self):
-        self.dataviewer.update_datasets_from_collector(self.datacollector)
-
-        if self.dataviewer.isVisible():
-            self.dataviewer.hide()
-            self.cmdShowDataViewer.setText("Show Data Viewer")
-            self.dataviewer.datasetList.setCurrentRow(0)
-        else:
-            self.dataviewer.show()
-            self.cmdShowDataViewer.setText("Hide Data Viewer")
-            self.dataviewer.datasetList.setCurrentRow(0)
-
     def closeEvent(self, event):
         sys.exit()
 
     def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
-        if self.pl != None:
+        if self.pl is not None:
             self.pl.send_data_to_subtab(fitpage_from, fitpage_to, subtab_index)
         else:
             pass

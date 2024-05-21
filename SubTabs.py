@@ -74,8 +74,6 @@ class SubTabs(QtWidgets.QTabWidget):
     def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):
         #from_fitpage is the fitpage that the data originates from
         #to_fitpage is the plotpage for the fitpage thats supposed to display the additional data
-        dataset_from_fitpage = self.datacollector.get_data_by_fitpage_index(from_fitpage_index)
-        dataset_to_fitpage = self.datacollector.get_data_by_fitpage_index(to_fitpage_index)
         self.removeTab(which_subtab)
 
         adjustedtab = QtWidgets.QWidget()
@@ -93,7 +91,6 @@ class SubTabs(QtWidgets.QTabWidget):
         x_dataset = self.datacollector.get_x_data(from_fitpage_index)
         y_dataset = self.datacollector.get_y_data(from_fitpage_index)
         y_fit = self.datacollector.get_y_fit_data(from_fitpage_index)
-        show_graphs = self.datacollector.get_show_graphs(from_fitpage_index)
 
         static_ax_adjusted.plot(x_dataset, y_dataset, color='tab:brown')
         static_ax_adjusted.plot(x_dataset, y_fit, color='tab:blue')

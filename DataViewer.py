@@ -1,7 +1,7 @@
 from PyQt6 import QtWidgets
 from PyQt6 import QtCore
 from DataViewerUI import Ui_DataViewer
-from DataViewerDialog import DataViewerDialog
+
 
 class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
     def __init__(self, main_window):
@@ -10,39 +10,72 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         self.setWindowTitle("Data Viewer")
 
         self.cmdSendToPlotpage.clicked.connect(self.onSendToPlotpage)
-        self.cmdClose.clicked.connect(self.onClose)
+        self.cmdClose.clicked.connect(self.onShowDataViewer)
+        self.datasetList.currentItemChanged.connect(self.updateComboboxes)
+
         self.main_window = main_window
         self.datacollector = self.main_window.datacollector
         self.labelSelectAnItem.hide()
+        self.data_origin_fitpage_index = None
 
-        self.send_to_fitpage_index = None
-        self.bool_send_to_fitpage = False
-        self.send_to_subtab_index = None
 
-    def update_datasets_from_collector(self, datacollector):
+    def update_datasets_from_collector(self):
+        # block signals to prevent currentItemChanged to be called. otherwise the program crashes, because it tries
+        # to access the current item.
+        self.datasetList.blockSignals(True)
         self.datasetList.clear()
-        self.datacollector = datacollector
-        datasets = datacollector.datasets
+        self.datasetList.blockSignals(False)
+
+        datasets = self.datacollector.datasets
         for i in range(len(datasets)):
             self.datasetList.addItem("Data from Fitpage " + str(datasets[i][0]))
 
     def onSendToPlotpage(self):
         current_row_index = self.datasetList.currentRow()
         if current_row_index != -1:
-            current_item_fitpage_index = int(self.datasetList.currentItem().text().split()[3])
             self.labelSelectAnItem.hide()
-            #aufrufen von der funktion vom mainwindow, die das dann zum plotten rüberschickt zu subtabs
-            self.dataviewerdialog = DataViewerDialog(current_item_fitpage_index, self.datacollector.get_datasets(), self)
-            self.dataviewerdialog.exec()
-            if self.send_to_fitpage_index != None and self.bool_send_to_fitpage:
-                self.main_window.send_data_to_subtab(current_item_fitpage_index, self.send_to_fitpage_index, self.send_to_subtab_index)
+            # calling the function to send to a subplot from the main window, this function is supposed to be moved to this class instead
+
+            target_fitpage_index = int(self.comboBoxTargetFitpage.currentText())
+            subtab_index = int(self.comboBoxTargetSubtag.currentIndex())
+
+            if target_fitpage_index is not None:
+                self.main_window.send_data_to_subtab(self.data_origin_fitpage_index, target_fitpage_index, subtab_index)
             else:
-                #either the close button from the dialog was clicked or only one fitpage exists and so there wont be
-                #a fitpage that the data can be sent to
+                # either the close button from the dialog was clicked or only one fitpage exists and so there won't be
+                # a fitpage that the data can be sent to
                 pass
         else:
+            # show warning label if no item is selected
             self.labelSelectAnItem.show()
 
-    def onClose(self):
-        self.close()
+    def updateComboboxes(self):
+        self.data_origin_fitpage_index = int(self.datasetList.currentItem().text().split()[3])
 
+        self.comboBoxTargetFitpage.clear()
+        self.comboBoxTargetSubtag.clear()
+
+        for i in range(len(self.datacollector.datasets)):
+            if self.datacollector.datasets[i][0] != self.data_origin_fitpage_index:
+                # target fitpage combobox updating
+                self.comboBoxTargetFitpage.addItem(str(self.datacollector.datasets[i][0]))
+                # subtabs combobox updating
+                if self.datacollector.datasets[i][4][0]:
+                    self.comboBoxTargetSubtag.addItem("Data")
+                if self.datacollector.datasets[i][4][1]:
+                    self.comboBoxTargetSubtag.addItem("Fit")
+                if self.datacollector.datasets[i][4][2]:
+                    self.comboBoxTargetSubtag.addItem("Residuals")
+            else:
+                continue
+
+    def onShowDataViewer(self):
+        if self.isVisible():
+            self.hide()
+            self.main_window.cmdShowDataViewer.setText("Show Data Viewer")
+            self.datasetList.setCurrentRow(0)
+        else:
+            self.update_datasets_from_collector()
+            self.show()
+            self.main_window.cmdShowDataViewer.setText("Hide Data Viewer")
+            self.datasetList.setCurrentRow(0)

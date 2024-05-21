@@ -18,7 +18,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>256</width>
+     <width>201</width>
      <height>192</height>
     </rect>
    </property>
@@ -26,8 +26,8 @@
   <widget class="QPushButton" name="cmdSendToPlotpage">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>10</y>
+     <x>230</x>
+     <y>140</y>
      <width>101</width>
      <height>24</height>
     </rect>
@@ -60,6 +60,52 @@
    </property>
    <property name="text">
     <string>Close</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBoxTargetFitpage">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>40</y>
+     <width>101</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelSendToFitpage">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>10</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Send to Plot from Fitpage...</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelSubtab">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>70</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Display in Subtab...</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBoxTargetSubtag">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>100</y>
+     <width>101</width>
+     <height>22</height>
+    </rect>
    </property>
   </widget>
  </widget>
