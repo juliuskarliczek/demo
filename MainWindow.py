@@ -39,17 +39,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             return
         self.labelWarning.hide()
 
-        if self.pl is None:
-            self.pl = PlotWidget(self.datacollector, fitpage_index)
-        else:
-            self.pl.createNewTab(self.datacollector, fitpage_index)
-
-        if not self.pl.isVisible:
-            pass
-        else:
-            self.pl.show()
-
-        self.pl.activateWindow()
+        self.dataviewer.create_plot(fitpage_index)
 
     def onActionNewFitPage(self):
         self.fitPageCounter += 1
@@ -59,13 +49,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def closeEvent(self, event):
         sys.exit()
-
-    def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
-        if self.pl is not None:
-            self.pl.send_data_to_subtab(fitpage_from, fitpage_to, subtab_index)
-        else:
-            pass
-
 
 app = QtWidgets.QApplication(sys.argv)
 
