@@ -34,9 +34,9 @@ class Ui_DataViewer(object):
         self.labelSubtab = QtWidgets.QLabel(parent=DataViewer)
         self.labelSubtab.setGeometry(QtCore.QRect(230, 70, 161, 21))
         self.labelSubtab.setObjectName("labelSubtab")
-        self.comboBoxTargetSubtag = QtWidgets.QComboBox(parent=DataViewer)
-        self.comboBoxTargetSubtag.setGeometry(QtCore.QRect(230, 100, 101, 22))
-        self.comboBoxTargetSubtag.setObjectName("comboBoxTargetSubtag")
+        self.comboBoxTargetSubtab = QtWidgets.QComboBox(parent=DataViewer)
+        self.comboBoxTargetSubtab.setGeometry(QtCore.QRect(230, 100, 101, 22))
+        self.comboBoxTargetSubtab.setObjectName("comboBoxTargetSubtab")
 
         self.retranslateUi(DataViewer)
         QtCore.QMetaObject.connectSlotsByName(DataViewer)

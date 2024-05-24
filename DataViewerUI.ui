@@ -98,7 +98,7 @@
     <string>Display in Subtab...</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBoxTargetSubtag">
+  <widget class="QComboBox" name="comboBoxTargetSubtab">
    <property name="geometry">
     <rect>
      <x>230</x>

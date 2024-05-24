@@ -53,19 +53,6 @@ class DataCollector:
             if fitpage_index == self.datasets[i][0]:
                 return self.datasets[i][4]
 
-
-    #um zu plotten sollte der datacollector übergeben werden und der index, der im datacollector zu dem richtigen dataset zeigt
-
-    #allgemein: was muss beachtet werden, wenn es mehrere fitpages gibt und manche replottet werden sollen,
-    #weil sich ihre daten geändert haben? wer ist für das feature zuständig und hält die daten?
-
-    #welche schnittstelle entscheidet, wann geplottet wird?
-    #refactoring vom bereits existierenden teil des programms, weil zu kompliziert?
-    #data explorer - hat die daten und kommuniziert nicht direkt mit der plot funktion?
-    #plot explorer - alle plots werden gelistet und
-
-    #serialize the data and make them a collection with the fitting page index?
-
     def get_x_data(self, fitpage_index):
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i][0]:

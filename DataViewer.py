@@ -46,12 +46,16 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
 
     def onSendToPlotpage(self):
         current_row_index = self.datasetList.currentRow()
+        print(current_row_index)
         if current_row_index != -1:
             self.labelSelectAnItem.hide()
+            target_fitpage_index = None
+            subtab_index = None
             # calling the function to send to a subplot from the main window, this function is supposed to be moved to this class instead
-
-            target_fitpage_index = int(self.comboBoxTargetFitpage.currentText())
-            subtab_index = int(self.comboBoxTargetSubtag.currentIndex())
+            if self.comboBoxTargetFitpage.currentIndex() != -1:
+                target_fitpage_index = int(self.comboBoxTargetFitpage.currentText())
+            if self.comboBoxTargetSubtab.currentIndex() != -1:
+                subtab_index = int(self.comboBoxTargetSubtab.currentIndex())
 
             if target_fitpage_index is not None:
                 if self.plot_widget is not None:
@@ -70,7 +74,7 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         self.data_origin_fitpage_index = int(self.datasetList.currentItem().text().split()[3])
 
         self.comboBoxTargetFitpage.clear()
-        self.comboBoxTargetSubtag.clear()
+        self.comboBoxTargetSubtab.clear()
 
         for i in range(len(self.datacollector.datasets)):
             if self.datacollector.datasets[i][0] != self.data_origin_fitpage_index:
@@ -78,11 +82,11 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
                 self.comboBoxTargetFitpage.addItem(str(self.datacollector.datasets[i][0]))
                 # subtabs combobox updating
                 if self.datacollector.datasets[i][4][0]:
-                    self.comboBoxTargetSubtag.addItem("Data")
+                    self.comboBoxTargetSubtab.addItem("Data")
                 if self.datacollector.datasets[i][4][1]:
-                    self.comboBoxTargetSubtag.addItem("Fit")
+                    self.comboBoxTargetSubtab.addItem("Fit")
                 if self.datacollector.datasets[i][4][2]:
-                    self.comboBoxTargetSubtag.addItem("Residuals")
+                    self.comboBoxTargetSubtab.addItem("Residuals")
             else:
                 continue
 

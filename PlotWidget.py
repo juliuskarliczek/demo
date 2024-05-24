@@ -48,4 +48,6 @@ class PlotWidget(QtWidgets.QTabWidget):
     def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
         plottab_index = self.datacollector.get_plot_index(fitpage_to)
         self.subtabs[plottab_index].add_dataset_to_subtab(fitpage_from, fitpage_to, subtab_index)
+        self.setCurrentIndex(plottab_index)
+        self.activateWindow()
 

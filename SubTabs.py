@@ -19,55 +19,26 @@ class SubTabs(QtWidgets.QTabWidget):
         show_graphs = data_collector.get_show_graphs(fitpage_index)
 
         if show_graphs[0]:
-            subtab_data = QtWidgets.QWidget()
-            layout_data = QtWidgets.QVBoxLayout()
-            canvas_data = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 2.5)))
-            layout_data.addWidget(canvas_data)
-            layout_data.addWidget(NavigationToolbar2QT(canvas_data))
-            ax_data = canvas_data.figure.subplots()
-            ax_data.plot(x_dataset, y_dataset)
-            ax_data.set_xscale('log')
-            ax_data.set_yscale('log')
-            subtab_data.setLayout(layout_data)
-            self.subtabs.append(subtab_data)
-            self.addTab(subtab_data, "Data")
+            subtab = self.new_subtab([x_dataset], [y_dataset],
+                                     settings={"xscale": "log", "yscale": "log",
+                                                "xlabel": "xdata", "ylabel": "ydata", "toolbar": True, "grid": True})
+            self.subtabs.append(subtab)
+            self.addTab(subtab, "Data")
 
         if show_graphs[1]:
-            subtab_fit = QtWidgets.QWidget()
-            layout_fit = QtWidgets.QVBoxLayout()
-            canvas_fit = FigureCanvasQTAgg(matplotlib.figure.Figure(figsize=(3, 3)))
-            layout_fit.addWidget(canvas_fit)
-            layout_fit.addWidget(NavigationToolbar2QT(canvas_fit))
-            ax_fit = canvas_fit.figure.subplots()
-            ax_fit.plot(x_dataset, y_dataset)
-            ax_fit.plot(x_dataset, y_fit)
-            ax_fit.set_xscale('log')
-            ax_fit.set_yscale('log')
-            subtab_fit.setLayout(layout_fit)
-            self.subtabs.append(subtab_fit)
-            self.addTab(subtab_fit, "Fit")
+            subtab = self.new_subtab([x_dataset], [y_dataset, y_fit],
+                                     settings={"xscale": "log", "yscale": "log",
+                                               "xlabel": "xdata", "ylabel": "ydata", "toolbar": True, "grid": True})
+            self.subtabs.append(subtab)
+            self.addTab(subtab, "Fit")
 
         if show_graphs[2]:
-            subtab_residuals = QtWidgets.QWidget()
-            layout_residuals = QtWidgets.QVBoxLayout()
-            fig_residuals = matplotlib.figure.Figure(figsize=(3, 3))
-            canvas_residuals = FigureCanvasQTAgg(fig_residuals)
-            layout_residuals.addWidget(canvas_residuals)
-            layout_residuals.addWidget(NavigationToolbar2QT(canvas_residuals))
-            ax_residuals = canvas_residuals.figure.subplots(2, gridspec_kw={'height_ratios': [3, 1]})
-            ax_residuals[0].set_ylabel("fit")
-            ax_residuals[0].plot(x_dataset, y_dataset, color='tab:brown')
-            ax_residuals[0].plot(x_dataset, y_fit, color='tab:blue')
-
-            ax_residuals[0].set_xscale('log')
-            ax_residuals[0].set_yscale('log')
-
-            ax_residuals[1].set_ylabel("residuals")
-            ax_residuals[1].set_yscale('log')
-            ax_residuals[1].plot(x_dataset, np.subtract(y_dataset, y_fit), color='tab:green')
-            subtab_residuals.setLayout(layout_residuals)
-            self.subtabs.append(subtab_residuals)
-            self.addTab(subtab_residuals, "Residuals")
+            subtab = self.new_subtab([x_dataset], [y_dataset, y_fit],
+                                     settings={"xscale": "log", "yscale": "log",
+                                               "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
+                                               "residuals": True, "grid": True})
+            self.subtabs.append(subtab)
+            self.addTab(subtab, "Residuals")
 
 
     def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):
@@ -75,30 +46,85 @@ class SubTabs(QtWidgets.QTabWidget):
         #to_fitpage is the plotpage for the fitpage thats supposed to display the additional data
         self.removeTab(which_subtab)
 
-        adjustedtab = QtWidgets.QWidget()
-        layout_adjusted = QtWidgets.QVBoxLayout()
-        fig_adjusted = matplotlib.figure.Figure(figsize=(3, 3))
-        canvas_adjusted = FigureCanvasQTAgg(fig_adjusted)
-        layout_adjusted.addWidget(canvas_adjusted)
-        layout_adjusted.addWidget(NavigationToolbar2QT(canvas_adjusted))
-        ax_adjusted = canvas_adjusted.figure.subplots()
-        ax_adjusted.set_ylabel("data")
+        x_dataset_from = self.datacollector.get_x_data(from_fitpage_index)
+        y_dataset_from = self.datacollector.get_y_data(from_fitpage_index)
+        y_fit_from = self.datacollector.get_y_fit_data(from_fitpage_index)
 
-        ax_adjusted.set_xscale('log')
-        ax_adjusted.set_yscale('log')
+        x_dataset_to = self.datacollector.get_x_data(to_fitpage_index)
+        y_dataset_to = self.datacollector.get_y_data(to_fitpage_index)
+        y_fit_to = self.datacollector.get_y_fit_data(to_fitpage_index)
 
-        x_dataset = self.datacollector.get_x_data(from_fitpage_index)
-        y_dataset = self.datacollector.get_y_data(from_fitpage_index)
-        y_fit = self.datacollector.get_y_fit_data(from_fitpage_index)
-
-        ax_adjusted.plot(x_dataset, y_dataset, color='tab:brown')
-        ax_adjusted.plot(x_dataset, y_fit, color='tab:blue')
-
-        adjustedtab.setLayout(layout_adjusted)
-
+        adjustedtab = self.new_subtab([x_dataset_from, x_dataset_from, x_dataset_to, x_dataset_to],
+                                      [y_dataset_from, y_fit_from, y_dataset_to, y_fit_to],
+                                      settings={"xscale": "log", "yscale": "log",
+                                                "xlabel": "xdata", "ylabel": "dataothertab", "toolbar": True,
+                                                "grid": True})
         self.insertTab(which_subtab, adjustedtab, "Adjusted Subtab")
+        self.setCurrentIndex(which_subtab)
 
+    def new_subtab(self, xdata, ydata, settings):
+        # xdata is a list of lists containing the xdata at every position for the certain subplot
+        # settings is a dict of e.g. {xlabel: 'foo', ylabel: 'bar', xscale: 'a', yscale: 'b', nrows: int, ncols: int,
+        #                               toolbar: True, grid: True}
+        residuals_b = False
+        subtab = QtWidgets.QWidget()
+        layout = QtWidgets.QVBoxLayout()
+        figure = matplotlib.figure.Figure(figsize=(3, 3))
+        canvas = FigureCanvasQTAgg(figure)
+        layout.addWidget(canvas)
+        if "toolbar" in settings:
+            if settings["toolbar"]:
+                layout.addWidget(NavigationToolbar2QT(canvas))
+        if "residuals" in settings:
+            if settings["residuals"]:
+                residuals_b = True
+                ax = canvas.figure.subplots(2, gridspec_kw={'height_ratios': [3, 1]})
+            else:
+                ax = canvas.figure.subplots()
+        else:
+            ax = canvas.figure.subplots()
 
-    def create_mpl_layout(self):
-       pass
+        for i in range(len(ydata)):
+            if residuals_b:
+                if len(xdata) > 1:
+                    ax[0].plot(xdata[i], ydata[i])
+                else:
+                    ax[0].plot(xdata[0], ydata[i])
+                ax[1].plot(xdata[0], np.subtract(ydata[1], ydata[0]), color='tab:green')
+            else:
+                if len(xdata) > 1:
+                    ax.plot(xdata[i], ydata[i])
+                else:
+                    ax.plot(xdata[0], ydata[i])
+        if residuals_b:
+            if "xlabel" in settings:
+                ax[0].set_xlabel(settings["xlabel"])
+                ax[1].set_xlabel(settings["xlabel"])
+            if "ylabel" in settings:
+                ax[0].set_ylabel(settings["ylabel"])
+            if "xscale" in settings:
+                ax[0].set_xscale(settings["xscale"])
+            if "yscale" in settings:
+                ax[0].set_yscale(settings["yscale"])
+            if "grid" in settings:
+                if settings["grid"]:
+                    ax[0].grid(True)
+                    ax[1].grid(True)
+            ax[1].set_xscale("log")
+            ax[1].set_yscale("log")
+            ax[1].set_ylabel("residuals")
+        else:
+            if "xlabel" in settings:
+                ax.set_xlabel(settings["xlabel"])
+            if "ylabel" in settings:
+                ax.set_ylabel(settings["ylabel"])
+            if "xscale" in settings:
+                ax.set_xscale(settings["xscale"])
+            if "yscale" in settings:
+                ax.set_yscale(settings["yscale"])
+            if "grid" in settings:
+                if settings["grid"]:
+                    ax.grid(True)
 
+        subtab.setLayout(layout)
+        return subtab
