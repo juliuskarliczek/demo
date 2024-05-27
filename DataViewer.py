@@ -2,6 +2,8 @@ from PyQt6 import QtWidgets
 from PyQt6 import QtCore
 from DataViewerUI import Ui_DataViewer
 from PlotWidget import PlotWidget
+from DataTreeWidget import DataTreeWidget
+
 
 class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
     def __init__(self, main_window):
@@ -9,9 +11,11 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         self.setupUi(self)
         self.setWindowTitle("Data Viewer")
 
+        self.dataTreeWidget = DataTreeWidget(self)
+
         self.cmdSendToPlotpage.clicked.connect(self.onSendToPlotpage)
         self.cmdClose.clicked.connect(self.onShowDataViewer)
-        self.datasetList.currentItemChanged.connect(self.updateComboboxes)
+        self.dataTreeWidget.currentItemChanged.connect(self.updateComboboxes)
 
         self.main_window = main_window
         self.datacollector = self.main_window.datacollector
@@ -36,18 +40,18 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
     def update_datasets_from_collector(self):
         # block signals to prevent currentItemChanged to be called. otherwise the program crashes, because it tries
         # to access the current item.
-        self.datasetList.blockSignals(True)
-        self.datasetList.clear()
-        self.datasetList.blockSignals(False)
+        self.dataTreeWidget.blockSignals(True)
+        self.dataTreeWidget.clear()
+        self.dataTreeWidget.blockSignals(False)
 
         datasets = self.datacollector.datasets
         for i in range(len(datasets)):
-            self.datasetList.addItem("Data from Fitpage " + str(datasets[i][0]))
+            name = "Data from Fitpage " + str(datasets[i][0])
+            item = QtWidgets.QTreeWidgetItem(self.dataTreeWidget, [name])
 
     def onSendToPlotpage(self):
-        current_row_index = self.datasetList.currentRow()
-        print(current_row_index)
-        if current_row_index != -1:
+        current_row_item = self.dataTreeWidget.currentItem()
+        if current_row_item is not None:
             self.labelSelectAnItem.hide()
             target_fitpage_index = None
             subtab_index = None
@@ -71,7 +75,7 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
             self.labelSelectAnItem.show()
 
     def updateComboboxes(self):
-        self.data_origin_fitpage_index = int(self.datasetList.currentItem().text().split()[3])
+        self.data_origin_fitpage_index = int(self.dataTreeWidget.currentItem().text(0).split()[3])
 
         self.comboBoxTargetFitpage.clear()
         self.comboBoxTargetSubtab.clear()
@@ -94,9 +98,11 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         if self.isVisible():
             self.hide()
             self.main_window.cmdShowDataViewer.setText("Show Data Viewer")
-            self.datasetList.setCurrentRow(0)
+            #self.datasetList.setCurrentRow(0)
         else:
+            print("ok3")
             self.update_datasets_from_collector()
+            print("ok4")
             self.show()
             self.main_window.cmdShowDataViewer.setText("Hide Data Viewer")
-            self.datasetList.setCurrentRow(0)
+            #self.datasetList.setCurrentRow(0)
