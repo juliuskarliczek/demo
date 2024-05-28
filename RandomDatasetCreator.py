@@ -16,7 +16,7 @@ class DatasetCreator:
             volume = height * np.pi * radius**2
             return 4 * scale * volume * (special.jv(1, q*radius))**2 / (q*radius)**2
 
-    def createRandomDataset(self, scale, radius, height, combobox_index):
+    def createRandomDataset(self, scale, radius, height, combobox_index, fit=False):
         self.combobox_index = combobox_index
         length = 4999
         q_sample = np.linspace(start=1, stop=100, num=length)
@@ -26,10 +26,11 @@ class DatasetCreator:
             err = y_sample_no_err * (np.random.random()-0.5) / 2
             y_sample[i] = y_sample_no_err + err
 
-        parameters_optimal = curve_fit(f=self.func, xdata=q_sample, ydata=y_sample)
         y_fit = []
-        for i in range(len(q_sample)):
-            y_fit.append(self.func(q_sample[i], parameters_optimal[0][0], parameters_optimal[0][1], parameters_optimal[0][2]))
+        if fit:
+            parameters_optimal = curve_fit(f=self.func, xdata=q_sample, ydata=y_sample)
+            for i in range(len(q_sample)):
+                y_fit.append(self.func(q_sample[i], parameters_optimal[0][0], parameters_optimal[0][1], parameters_optimal[0][2]))
 
         return q_sample, y_sample, y_fit
 

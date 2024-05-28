@@ -2,7 +2,7 @@ from PyQt6 import QtWidgets
 from SubTabs import SubTabs
 
 class PlotWidget(QtWidgets.QTabWidget):
-    def __init__(self, data_collector, fitpage_index):
+    def __init__(self, datacollector, fitpage_index):
         self.tabs_index = 0
 
         super().__init__()
@@ -10,18 +10,18 @@ class PlotWidget(QtWidgets.QTabWidget):
         self.setMinimumSize(600, 600)
         self.tabs = []
         self.subtabs = []
-        self.createNewTab(data_collector, fitpage_index)
-        self.datacollector = data_collector
+        self.createNewTab(datacollector, fitpage_index)
+        self.datacollector = datacollector
 
-    def createNewTab(self, data_collector, fitpage_index):
+    def createNewTab(self, datacollector, fitpage_index):
         #check if the tab is already existing. if its not existing: create it. otherwise: change to the index of the tab
-        plot_index = data_collector.get_plot_index(fitpage_index)
+        plot_index = datacollector.get_data_by_fitpage_index(fitpage_index).get_plotpage_index()
         if plot_index == -1:
-            data_collector.set_plot_index(fitpage_index, self.tabs_index)
+            datacollector.set_plot_index(fitpage_index, self.tabs_index)
             #create new plotpage
             newTab = QtWidgets.QWidget()
             layout = QtWidgets.QVBoxLayout(newTab)
-            new_subtab = SubTabs(data_collector, fitpage_index)
+            new_subtab = SubTabs(datacollector, fitpage_index)
             layout.addWidget(new_subtab)
             newTab.setLayout(layout)
             #add created plot page to the widget, keep it in the list of tabs to keep track
@@ -36,7 +36,7 @@ class PlotWidget(QtWidgets.QTabWidget):
 
             recalculatedTab = QtWidgets.QWidget()
             layout = QtWidgets.QVBoxLayout(recalculatedTab)
-            new_subtab = SubTabs(data_collector, fitpage_index)
+            new_subtab = SubTabs(datacollector, fitpage_index)
             layout.addWidget(new_subtab)
             recalculatedTab.setLayout(layout)
 
@@ -46,7 +46,7 @@ class PlotWidget(QtWidgets.QTabWidget):
             self.setCurrentIndex(plot_index)
 
     def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
-        plottab_index = self.datacollector.get_plot_index(fitpage_to)
+        plottab_index = self.datacollector.get_plotpage_index(fitpage_to)
         self.subtabs[plottab_index].add_dataset_to_subtab(fitpage_from, fitpage_to, subtab_index)
         self.setCurrentIndex(plottab_index)
         self.activateWindow()

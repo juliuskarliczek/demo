@@ -7,38 +7,35 @@ import RandomDatasetCreator
 import numpy as np
 
 class SubTabs(QtWidgets.QTabWidget):
-    def __init__(self, data_collector, fitpage_index):
+    def __init__(self, datacollector, fitpage_index):
         super().__init__()
 
-        self.datacollector = data_collector
+        self.datacollector = datacollector
         self.fitpage_index = fitpage_index
         self.subtabs = []
-        x_dataset = data_collector.get_x_data(fitpage_index)
-        y_dataset = data_collector.get_y_data(fitpage_index)
-        y_fit = data_collector.get_y_fit_data(fitpage_index)
-        show_graphs = data_collector.get_show_graphs(fitpage_index)
+        x_dataset = datacollector.get_x_data(fitpage_index)
+        y_dataset = datacollector.get_y_data(fitpage_index)
 
-        if show_graphs[0]:
-            subtab = self.new_subtab([x_dataset], [y_dataset],
-                                     settings={"xscale": "log", "yscale": "log",
-                                                "xlabel": "xdata", "ylabel": "ydata", "toolbar": True, "grid": True})
-            self.subtabs.append(subtab)
-            self.addTab(subtab, "Data")
+        subtab = self.new_subtab([x_dataset], [y_dataset],
+                                 settings={"xscale": "log", "yscale": "log",
+                                           "xlabel": "xdata", "ylabel": "ydata", "toolbar": True, "grid": True})
+        self.subtabs.append(subtab)
+        self.addTab(subtab, "Data")
 
-        if show_graphs[1]:
-            subtab = self.new_subtab([x_dataset], [y_dataset, y_fit],
-                                     settings={"xscale": "log", "yscale": "log",
-                                               "xlabel": "xdata", "ylabel": "ydata", "toolbar": True, "grid": True})
-            self.subtabs.append(subtab)
-            self.addTab(subtab, "Fit")
+        if datacollector.get_data_by_fitpage_index(fitpage_index).has_y_fit():
+            y_fit = datacollector.get_y_fit_data(fitpage_index)
+            subtab_fit = self.new_subtab([x_dataset], [y_dataset, y_fit],
+                                         settings={"xscale": "log", "yscale": "log",
+                                                   "xlabel": "xdata", "ylabel": "ydata", "toolbar": True, "grid": True})
+            self.subtabs.append(subtab_fit)
+            self.addTab(subtab_fit, "Fit")
 
-        if show_graphs[2]:
-            subtab = self.new_subtab([x_dataset], [y_dataset, y_fit],
-                                     settings={"xscale": "log", "yscale": "log",
-                                               "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
-                                               "residuals": True, "grid": True})
-            self.subtabs.append(subtab)
-            self.addTab(subtab, "Residuals")
+            subtab_res = self.new_subtab([x_dataset], [y_dataset, y_fit],
+                                         settings={"xscale": "log", "yscale": "log",
+                                                   "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
+                                                   "residuals": True, "grid": True})
+            self.subtabs.append(subtab_res)
+            self.addTab(subtab_res, "Residuals")
 
 
     def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):

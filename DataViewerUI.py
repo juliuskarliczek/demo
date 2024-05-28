@@ -12,15 +12,15 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_DataViewer(object):
     def setupUi(self, DataViewer):
         DataViewer.setObjectName("DataViewer")
-        DataViewer.resize(400, 300)
+        DataViewer.resize(402, 501)
         self.cmdSendToPlotpage = QtWidgets.QPushButton(parent=DataViewer)
         self.cmdSendToPlotpage.setGeometry(QtCore.QRect(230, 140, 101, 24))
         self.cmdSendToPlotpage.setObjectName("cmdSendToPlotpage")
         self.labelSelectAnItem = QtWidgets.QLabel(parent=DataViewer)
-        self.labelSelectAnItem.setGeometry(QtCore.QRect(10, 270, 91, 16))
+        self.labelSelectAnItem.setGeometry(QtCore.QRect(10, 210, 91, 16))
         self.labelSelectAnItem.setObjectName("labelSelectAnItem")
         self.cmdClose = QtWidgets.QPushButton(parent=DataViewer)
-        self.cmdClose.setGeometry(QtCore.QRect(320, 270, 75, 24))
+        self.cmdClose.setGeometry(QtCore.QRect(320, 470, 75, 24))
         self.cmdClose.setObjectName("cmdClose")
         self.comboBoxTargetFitpage = QtWidgets.QComboBox(parent=DataViewer)
         self.comboBoxTargetFitpage.setGeometry(QtCore.QRect(230, 40, 101, 22))

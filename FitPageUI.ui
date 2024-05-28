@@ -95,7 +95,7 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>171</width>
+     <width>131</width>
      <height>22</height>
     </rect>
    </property>
@@ -130,6 +130,19 @@
    </property>
    <property name="text">
     <string>Height</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBoxCreateFit">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>20</y>
+     <width>181</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Create Fit for generated Data</string>
    </property>
   </widget>
  </widget>

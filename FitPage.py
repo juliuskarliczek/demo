@@ -20,6 +20,9 @@ class FitPage(QtWidgets.QWidget, Ui_fitPageWidget):
     def get_combobox_index(self):
         return self.comboBoxFormFactor.currentIndex()
 
+    def get_checkbox_fit(self):
+        return self.checkBoxCreateFit.isChecked()
+
     def index_changed(self, selected_item):
         if selected_item == 0:
             self.doubleSpinBox_height.setDisabled(True)

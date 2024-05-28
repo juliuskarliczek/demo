@@ -35,7 +35,7 @@ class Ui_fitPageWidget(object):
         self.label_equation.setGeometry(QtCore.QRect(20, 70, 211, 16))
         self.label_equation.setObjectName("label_equation")
         self.comboBoxFormFactor = QtWidgets.QComboBox(parent=fitPageWidget)
-        self.comboBoxFormFactor.setGeometry(QtCore.QRect(20, 20, 171, 22))
+        self.comboBoxFormFactor.setGeometry(QtCore.QRect(20, 20, 131, 22))
         self.comboBoxFormFactor.setObjectName("comboBoxFormFactor")
         self.doubleSpinBox_height = QtWidgets.QDoubleSpinBox(parent=fitPageWidget)
         self.doubleSpinBox_height.setGeometry(QtCore.QRect(80, 160, 62, 22))
@@ -46,6 +46,9 @@ class Ui_fitPageWidget(object):
         self.label_c = QtWidgets.QLabel(parent=fitPageWidget)
         self.label_c.setGeometry(QtCore.QRect(20, 160, 51, 16))
         self.label_c.setObjectName("label_c")
+        self.checkBoxCreateFit = QtWidgets.QCheckBox(parent=fitPageWidget)
+        self.checkBoxCreateFit.setGeometry(QtCore.QRect(210, 20, 181, 20))
+        self.checkBoxCreateFit.setObjectName("checkBoxCreateFit")
 
         self.retranslateUi(fitPageWidget)
         QtCore.QMetaObject.connectSlotsByName(fitPageWidget)
@@ -57,3 +60,4 @@ class Ui_fitPageWidget(object):
         self.label_b.setText(_translate("fitPageWidget", "Radius"))
         self.label_equation.setText(_translate("fitPageWidget", "Parameters for scattering function P(q)"))
         self.label_c.setText(_translate("fitPageWidget", "Height"))
+        self.checkBoxCreateFit.setText(_translate("fitPageWidget", "Create Fit for generated Data"))

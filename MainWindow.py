@@ -14,32 +14,31 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.setWindowTitle("Tabbed Plot Demo")
-        self.setMinimumSize(700, 700)
+        self.setFixedSize(700, 560)
 
-        self.datacollector = DataCollector()
-        self.pl = None
-
-        self.cmdCreatePlot.clicked.connect(self.onCreatePlot)
+        self.cmdPlot.clicked.connect(self.onPlot)
+        self.cmdCalculate.clicked.connect(self.onCalculate)
         self.actionNewFitPage.triggered.connect(self.onActionNewFitPage)
         self.fitPageCounter = 1
         self.newFitPage = FitPage(int_identifier=self.fitPageCounter)
         self.fittingTabs.addTab(self.newFitPage, "Fit Page "+str(self.fitPageCounter))
-        self.labelWarning.hide()
 
         self.dataviewer = DataViewer(self)
         self.cmdShowDataViewer.clicked.connect(self.dataviewer.onShowDataViewer)
 
-    def onCreatePlot(self):
+    def onPlot(self):
         fitpage_index = self.fittingTabs.currentWidget().get_int_identifier()
-        self.datacollector.update_dataset(self, fitpage_index)
-        show_graphs = self.datacollector.get_show_graphs(fitpage_index)
-
-        if not (show_graphs[0] or show_graphs[1] or show_graphs[2]):
-            self.labelWarning.show()
-            return
-        self.labelWarning.hide()
-
+        self.onCalculate()
         self.dataviewer.create_plot(fitpage_index)
+
+    def onCalculate(self):
+        fitpage_index = self.fittingTabs.currentWidget().get_int_identifier()
+        create_fit = self.fittingTabs.currentWidget().get_checkbox_fit()
+        self.dataviewer.update_dataset(self, fitpage_index, create_fit)
+        self.dataviewer.update_datasets_from_collector()
+        self.dataviewer.show()
+        self.dataviewer.activateWindow()
+        self.cmdShowDataViewer.setText("Hide Data Viewer")
 
     def onActionNewFitPage(self):
         self.fitPageCounter += 1
