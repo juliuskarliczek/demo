@@ -1,10 +1,9 @@
 import sys
+import traceback
 from PyQt6 import QtWidgets
 
 from MainWindowUI import Ui_MainWindow
-from PlotWidget import PlotWidget
 from FitPage import FitPage
-from DataCollector import DataCollector
 from DataViewer import DataViewer
 
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -16,15 +15,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle("Tabbed Plot Demo")
         self.setFixedSize(700, 560)
 
-        self.cmdPlot.clicked.connect(self.onPlot)
-        self.cmdCalculate.clicked.connect(self.onCalculate)
-        self.actionNewFitPage.triggered.connect(self.onActionNewFitPage)
         self.fitPageCounter = 1
         self.newFitPage = FitPage(int_identifier=self.fitPageCounter)
         self.fittingTabs.addTab(self.newFitPage, "Fit Page "+str(self.fitPageCounter))
 
         self.dataviewer = DataViewer(self)
+
         self.cmdShowDataViewer.clicked.connect(self.dataviewer.onShowDataViewer)
+        self.cmdPlot.clicked.connect(self.onPlot)
+        self.cmdCalculate.clicked.connect(self.onCalculate)
+        self.actionNewFitPage.triggered.connect(self.onActionNewFitPage)
 
     def onPlot(self):
         fitpage_index = self.fittingTabs.currentWidget().get_int_identifier()
@@ -36,9 +36,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         create_fit = self.fittingTabs.currentWidget().get_checkbox_fit()
         self.dataviewer.update_dataset(self, fitpage_index, create_fit)
         self.dataviewer.update_datasets_from_collector()
-        self.dataviewer.show()
-        self.dataviewer.activateWindow()
-        self.cmdShowDataViewer.setText("Hide Data Viewer")
 
     def onActionNewFitPage(self):
         self.fitPageCounter += 1
@@ -49,9 +46,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         sys.exit()
 
-app = QtWidgets.QApplication(sys.argv)
+def excepthook(exc_type, exc_value, exc_tb):
+    tb = "".join(traceback.format_exception(exc_type, exc_value, exc_tb))
+    print("error caught!:")
+    print("error message:\n", tb)
+    QtWidgets.QApplication.quit()
+    # or QtWidgets.QApplication.exit(0)
 
+sys.excepthook = excepthook
+app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
 window.show()
 
-app.exec()
+ret = app.exec()
+sys.exit(ret)

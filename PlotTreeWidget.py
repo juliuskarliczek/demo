@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QTreeWidget, QTreeWidgetItem
-from PyQt6.QtCore import QMimeData, QRect
+from PyQt6.QtCore import QMimeData, QRect, QDataStream
 from PyQt6.QtGui import QDrag
 
 class PlotTreeWidget(QTreeWidget):
@@ -22,16 +22,19 @@ class PlotTreeWidget(QTreeWidget):
 
     def dropEvent(self, event):
         if event.mimeData().hasText():
-            targetItem = self.itemAt(event.position().toPoint())
-            newItem = QTreeWidgetItem()
-            newItem.setText(0, event.mimeData().text())
+            dataText = event.mimeData().text().split(",")[0]
+            print("plottreewidget mimeData text split [0]", dataText)
+            print("plottreewidget mimeData text", event.mimeData().text())
+            if dataText == "Data" or dataText == "Fit":
+                targetItem = self.itemAt(event.position().toPoint())
+                newItem = QTreeWidgetItem()
+                newItem.setText(0, event.mimeData().text())
+                if targetItem:
+                    targetItem.addChild(newItem)
+                else:
+                    self.addTopLevelItem(newItem)
 
-            if targetItem:
-                targetItem.addChild(newItem)
-            else:
-                self.addTopLevelItem(newItem)
-
-            event.acceptProposedAction()
+                event.acceptProposedAction()
 
 
 

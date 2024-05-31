@@ -1,11 +1,11 @@
 #class to keep track of all datasets of fitpages and more
 import RandomDatasetCreator
 from Dataset import Dataset
-
+from typing import List
 
 class DataCollector:
     def __init__(self):
-        self.datasets = []
+        self.datasets: List[Dataset] = []
         self.datasetcreator = RandomDatasetCreator.DatasetCreator()
 
     def update_dataset(self, main_window, fitpage_index, create_fit):
@@ -73,4 +73,9 @@ class DataCollector:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 self.datasets[i].set_plotpage_index(plot_index)
+
+    def get_dataset_by_id(self, data_id):
+        for i in range(len(self.datasets)):
+            if data_id == self.datasets[i].get_data_id():
+                return self.datasets[i]
 
