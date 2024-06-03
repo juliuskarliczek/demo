@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QTreeWidget, QTreeWidgetItem
 from PyQt6.QtCore import QMimeData, QRect, QByteArray, QDataStream, QIODevice
 from PyQt6.QtGui import QDrag
-
+from DataTreeItems import DataItem
 
 class DataTreeWidget(QTreeWidget):
     def __init__(self, DataViewer, datacollector):
@@ -17,14 +17,18 @@ class DataTreeWidget(QTreeWidget):
     def startDrag(self, supportedActions):
         item = self.currentItem()
         if item:
-            drag = QDrag(self)
-            mimeData = QMimeData()
-            if item.parent() is None:
-                data_id = self.datacollector.get_data_by_fitpage_index(int(item.text(0).split()[3])).get_data_id()
-                mimeData.setText("FP" + "," + str(data_id))
-            else:
-                data_id = (self.datacollector.
-                           get_data_by_fitpage_index(int(item.parent().text(0).split()[3])).get_data_id())
-                mimeData.setText(self.currentItem().text(0) + "," + str(data_id))
-            drag.setMimeData(mimeData)
-            drag.exec(supportedActions)
+            if isinstance(item.data(0, 1), DataItem):
+                data_id = item.data(0, 1).get_data_id()
+
+                drag = QDrag(self)
+                itemData = QByteArray()
+                dataStream = QDataStream(itemData, QIODevice.OpenModeFlag.WriteOnly)
+                dataStream.writeDouble(data_id)
+                mimeData = QMimeData()
+                mimeData.setData('DataID', itemData)
+
+                fitpage_index = self.datacollector.get_dataset_by_id(data_id).get_fitpage_index()
+                mimeData.setText("FP " + str(fitpage_index) + " " + self.currentItem().text(0))
+
+                drag.setMimeData(mimeData)
+                drag.exec(supportedActions)

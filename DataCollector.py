@@ -41,30 +41,30 @@ class DataCollector:
 
         return dataset
 
-    def get_datasets(self):
+    def get_datasets(self) -> List:
         return self.datasets
 
-    def get_data_by_fitpage_index(self, fitpage_index):
+    def get_data_by_fitpage_index(self, fitpage_index) -> Dataset:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 return self.datasets[i]
 
-    def get_x_data(self, fitpage_index):
+    def get_x_data(self, fitpage_index) -> List:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 return self.datasets[i].get_x_data()
 
-    def get_y_data(self, fitpage_index):
+    def get_y_data(self, fitpage_index) -> List:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 return self.datasets[i].get_y_data()
 
-    def get_y_fit_data(self, fitpage_index):
+    def get_y_fit_data(self, fitpage_index) -> List:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 return self.datasets[i].get_y_fit()
 
-    def get_plotpage_index(self, fitpage_index):
+    def get_plotpage_index(self, fitpage_index) -> int:
         for i in range(len(self.datasets)):
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 return self.datasets[i].get_plotpage_index()
@@ -74,7 +74,7 @@ class DataCollector:
             if fitpage_index == self.datasets[i].get_fitpage_index():
                 self.datasets[i].set_plotpage_index(plot_index)
 
-    def get_dataset_by_id(self, data_id):
+    def get_dataset_by_id(self, data_id) -> Dataset:
         for i in range(len(self.datasets)):
             if data_id == self.datasets[i].get_data_id():
                 return self.datasets[i]

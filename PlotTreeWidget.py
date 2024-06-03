@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QTreeWidget, QTreeWidgetItem
-from PyQt6.QtCore import QMimeData, QRect, QDataStream
+from PyQt6.QtCore import QMimeData, QRect, QDataStream, QIODevice
 from PyQt6.QtGui import QDrag
+from PlotTreeItems import TabItem, SubTabItem, PlotItem, PlottableItem
 
 class PlotTreeWidget(QTreeWidget):
     def __init__(self, DataViewer):
@@ -13,28 +14,38 @@ class PlotTreeWidget(QTreeWidget):
         self.setHeaderLabels(["Plot Names"])
 
     def dragEnterEvent(self, event):
-        if event.mimeData().hasText():
+        if not event.mimeData().data('DataID').isEmpty():
             event.acceptProposedAction()
+        else:
+            event.ignore()
 
     def dragMoveEvent(self, event):
-        if event.mimeData().hasText():
-            event.acceptProposedAction()
+        #if not event.mimeData().data('DataID').isEmpty():
+        if self.itemAt(event.position().toPoint()).data(0, 1) is not None:
+            if isinstance(self.itemAt(event.position().toPoint()).data(0, 1), PlotItem):
+                event.acceptProposedAction()
+            else:
+                event.ignore()
+        else:
+            event.ignore()
 
     def dropEvent(self, event):
-        if event.mimeData().hasText():
-            dataText = event.mimeData().text().split(",")[0]
-            print("plottreewidget mimeData text split [0]", dataText)
-            print("plottreewidget mimeData text", event.mimeData().text())
-            if dataText == "Data" or dataText == "Fit":
-                targetItem = self.itemAt(event.position().toPoint())
-                newItem = QTreeWidgetItem()
-                newItem.setText(0, event.mimeData().text())
-                if targetItem:
-                    targetItem.addChild(newItem)
-                else:
-                    self.addTopLevelItem(newItem)
+        if not event.mimeData().data('DataID').isEmpty():
+            qds = QDataStream(event.mimeData().data('DataID'), QIODevice.OpenModeFlag.ReadOnly)
+            targetItem = self.itemAt(event.position().toPoint())
 
-                event.acceptProposedAction()
+            if isinstance(targetItem.data(0, 1), PlotItem):
+                new_plottable = PlottableItem(targetItem, [event.mimeData().text()])
+                new_plottable.setData(0, 1, new_plottable)
+            elif isinstance(targetItem.data(0, 1), PlottableItem):
+                # as soon as slots for adjusting are there, here the slots can be filled
+                pass
+            event.acceptProposedAction()
+        else:
+            event.ignore()
+
+
+
 
 
 

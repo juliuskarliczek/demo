@@ -6,6 +6,7 @@ from DataTreeWidget import DataTreeWidget
 from PlotTreeWidget import PlotTreeWidget
 from DataCollector import DataCollector
 from DataTreeItems import PlotPageItem, DataItem
+from PlotTreeItems import TabItem, SubTabItem, PlotItem, PlottableItem
 
 #delete this import later, only for testing
 import numpy as np
@@ -16,7 +17,7 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         super(DataViewer, self).__init__()
         self.setupUi(self)
         self.setWindowTitle("Data Viewer")
-        self.setMinimumSize(400,500)
+        self.setMinimumSize(400, 500)
 
         self.main_window = main_window
         self.datacollector = DataCollector()
@@ -51,10 +52,14 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         datasets = self.datacollector.get_datasets()
         for i in range(len(datasets)):
             name = "Data from Fitpage " + str(datasets[i].get_fitpage_index())
-            item = QTreeWidgetItem(self.dataTreeWidget, [name])
-            subitem_data = PlotPageItem(item, ["Data"])
+            data_id = datasets[i].get_data_id()
+            item = PlotPageItem(self.dataTreeWidget, [name], data_id)
+            item.setData(0, 1, item)
+            subitem_data = DataItem(item, ["Data"], data_id, 1)
+            subitem_data.setData(0, 1, subitem_data)
             if datasets[i].has_y_fit():
-                subitem_fit = DataItem(item, ["Fit"])
+                subitem_fit = DataItem(item, ["Fit"], data_id, 2)
+                subitem_fit.setData(0, 1, subitem_fit)
 
     def onSendToPlotpage(self):
         current_row_item = self.dataTreeWidget.currentItem()
@@ -93,15 +98,14 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
             self.labelSelectAnItem.show()
 
     def updateComboboxes(self):
+        # clear the comboboxes so that for data and fit subitems no data can be sent
+        self.comboBoxTargetFitpage.clear()
+        self.comboBoxTargetSubtab.clear()
+
         # check if a toplevel item is selected
-        if (len(self.dataTreeWidget.currentItem().text(0).split()) > 1 and
-                self.dataTreeWidget.currentItem().parent() is None):
-
-            self.data_origin_fitpage_index = int(self.dataTreeWidget.currentItem().text(0).split()[3])
-
-            # clear comboboxes before iterating through fitpages and subtabs to get the indices
-            self.comboBoxTargetFitpage.clear()
-            self.comboBoxTargetSubtab.clear()
+        if isinstance(self.dataTreeWidget.currentItem().data(0, 1), PlotPageItem):
+            data_id = self.dataTreeWidget.currentItem().data(0, 1).get_data_id()
+            self.data_origin_fitpage_index = int(self.datacollector.get_dataset_by_id(data_id).get_fitpage_index())
 
             # iterate through datasets and get information from tabs and subtabs
             # for every tab besides the already selected one
@@ -139,16 +143,18 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         for i in range(num_tabs):
             tab_name = self.plot_widget.tabText(i)
             tab_names.append(tab_name)
-            plot_item = QTreeWidgetItem(self.plotTreeWidget, [tab_name])
-
+            tab_item = TabItem(self.plotTreeWidget, [tab_name])
+            tab_item.setData(0, 1, tab_item)
             fitpage_index = int(tab_name.split()[3])
             subtab = self.plot_widget.get_existing_subtabs_from_fitpage_index(fitpage_index)
             figures = self.plot_widget.get_existing_figures_from_fitpage_index(fitpage_index)
             for j in range(subtab.count()):
-                subtab_item = QTreeWidgetItem(plot_item, [subtab.tabText(j)])
+                subtab_item = SubTabItem(tab_item, [subtab.tabText(j)])
+                subtab_item.setData(0, 1, subtab_item)
                 ax = subtab.figures[j].get_axes()
                 for k in range(len(ax)):
-                    subplot_item = QTreeWidgetItem(subtab_item, [ax[k].get_title()])
+                    plot_item = PlotItem(subtab_item, [ax[k].get_title()])
+                    plot_item.setData(0, 1, plot_item)
 
-            subtab.figures[0].get_axes()[0].plot(np.linspace(1, 100, 500),
-                                                 np.linspace(1, 100, 500))
+            #subtab.figures[0].get_axes()[0].plot(np.linspace(1, 100, 500),
+                                                 #np.linspace(1, 100, 500))
