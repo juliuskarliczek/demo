@@ -45,10 +45,6 @@ class SubTabs(QtWidgets.QTabWidget):
             self.figures.append(figure_res)
             self.addTab(subtab_res, "Residuals")
 
-    def get_subtab_amount(self):
-        return len(self.subtabs)
-
-
     def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):
         #from_fitpage is the fitpage that the data originates from
         #to_fitpage is the plotpage for the fitpage thats supposed to display the additional data
@@ -126,3 +122,6 @@ class SubTabs(QtWidgets.QTabWidget):
         figure.tight_layout()
         subtab.setLayout(layout)
         return subtab, figure
+
+    def get_fitpage_index(self):
+        return self.fitpage_index

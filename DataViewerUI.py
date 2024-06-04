@@ -34,6 +34,9 @@ class Ui_DataViewer(object):
         self.comboBoxTargetSubtab = QtWidgets.QComboBox(parent=DataViewer)
         self.comboBoxTargetSubtab.setGeometry(QtCore.QRect(230, 100, 101, 22))
         self.comboBoxTargetSubtab.setObjectName("comboBoxTargetSubtab")
+        self.cmdRedrawCurrentItem = QtWidgets.QPushButton(parent=DataViewer)
+        self.cmdRedrawCurrentItem.setGeometry(QtCore.QRect(230, 250, 161, 24))
+        self.cmdRedrawCurrentItem.setObjectName("cmdRedrawCurrentItem")
 
         self.retranslateUi(DataViewer)
         QtCore.QMetaObject.connectSlotsByName(DataViewer)
@@ -46,3 +49,4 @@ class Ui_DataViewer(object):
         self.cmdClose.setText(_translate("DataViewer", "Close"))
         self.labelSendToFitpage.setText(_translate("DataViewer", "Send to Plot from Fitpage..."))
         self.labelSubtab.setText(_translate("DataViewer", "Display in Subtab..."))
+        self.cmdRedrawCurrentItem.setText(_translate("DataViewer", "Redraw Current Item"))

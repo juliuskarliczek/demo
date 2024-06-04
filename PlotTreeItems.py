@@ -1,18 +1,37 @@
-#hier kommen items rein, die dann in dem plottreewidget benutzt werden können
+#items that are supposed to be used in the plottreewidget for checking if an item is for example a tab or a subtab
 from PyQt6.QtWidgets import QTreeWidgetItem
 class TabItem(QTreeWidgetItem):
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, fitpage_index):
         super().__init__(parent, name)
+        self.fitpage_index = fitpage_index
 
-class SubTabItem(QTreeWidgetItem):
-    def __init__(self, parent, name):
-        super().__init__(parent, name)
+    def get_fitpage_index(self):
+        return self.fitpage_index
 
-class PlotItem(QTreeWidgetItem):
-    def __init__(self, parent, name):
-        super().__init__(parent, name)
+class SubTabItem(TabItem):
+    def __init__(self, parent, name, fitpage_index, subtab_index):
+        super().__init__(parent, name, fitpage_index)
+        self.subtab_index = subtab_index
+
+    def get_subtab_index(self):
+        return self.subtab_index
+
+class PlotItem(SubTabItem):
+    def __init__(self, parent, name, fitpage_index, subtab_index, ax_index):
+        super().__init__(parent, name, fitpage_index, subtab_index)
+        self.ax_index = ax_index
+
+    def get_ax_index(self):
+        return self.ax_index
 
 class PlottableItem(QTreeWidgetItem):
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, data_id, type_num):
         super().__init__(parent, name)
+        self.data_id = data_id
+        # type serves the same purpose as in plottreeitems - knowing if the item is a data item or a fit item
+        # although this maybe does not even matter for plotting purposes, if one knows the name?
+        self.type_num = type_num
+
+    def get_type(self):
+        return self.type_num
 

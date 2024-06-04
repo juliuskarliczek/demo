@@ -9,37 +9,37 @@ class DataCollector:
         self.datasetcreator = RandomDatasetCreator.DatasetCreator()
 
     def update_dataset(self, main_window, fitpage_index, create_fit):
+        # search for an existing dataset with the right fitpage_index
+        # TODO: should be searched by id instead
         existing_dataset_index = -1
         for i in range(len(self.datasets)):
             if self.datasets[i].get_fitpage_index() == fitpage_index:
                 existing_dataset_index = i
 
         if existing_dataset_index == -1:
-            self.create_dataset(main_window, fitpage_index, create_fit)
+            # create new dataset in case it does not already exist
+            x_data, y_data, y_fit = self.simulate_data(main_window, fitpage_index, create_fit)
+            plotpage_index = -1
+
+            dataset = Dataset(fitpage_index, x_data, y_data, y_fit, plotpage_index)
+            self.datasets.append(dataset)
         else:
-            dataset = self.create_simulated_data(main_window, fitpage_index, create_fit)
-            plot_index = self.datasets[existing_dataset_index].get_plotpage_index()
-            self.datasets[existing_dataset_index] = Dataset(fitpage_index, dataset.get_x_data(), dataset.get_y_data(), dataset.get_y_fit(), plot_index)
+            # update values for existing dataset with respect to the number boxes in the fitpage
+            x_data, y_data, y_fit = self.simulate_data(main_window, fitpage_index, create_fit)
+            self.datasets[existing_dataset_index].set_x_data(x_data)
+            self.datasets[existing_dataset_index].set_y_data(y_data)
+            self.datasets[existing_dataset_index].set_y_fit(y_fit)
 
-    def create_dataset(self, main_window, fitpage_index, create_fit):
-        dataset = self.create_simulated_data(main_window, fitpage_index, create_fit)
-        plotpage_index = -1
-
-        dataset = Dataset(fitpage_index, dataset.get_x_data(), dataset.get_y_data(), dataset.get_y_fit(), plotpage_index)
-        self.datasets.append(dataset)
-
-    def create_simulated_data(self, main_window, fitpage_index, create_fit):
+    def simulate_data(self, main_window, fitpage_index, create_fit):
         combobox_index = main_window.fittingTabs.currentWidget().get_combobox_index()
-        int_identifier_parameter = main_window.fittingTabs.currentWidget().get_int_identifier()
         param_scale = main_window.fittingTabs.currentWidget().doubleSpinBox_scale.value()
         param_radius = main_window.fittingTabs.currentWidget().doubleSpinBox_radius.value()
         param_height = main_window.fittingTabs.currentWidget().doubleSpinBox_height.value()
 
-        x_dataset, y_dataset, y_fit = self.datasetcreator.createRandomDataset(param_scale, param_radius, param_height,
-                                                                              combobox_index, create_fit)
-        dataset = Dataset(fitpage_index, x_dataset, y_dataset, y_fit)
+        x_data, y_data, y_fit = self.datasetcreator.createRandomDataset(param_scale, param_radius, param_height,
+                                                                        combobox_index, create_fit)
 
-        return dataset
+        return x_data, y_data, y_fit
 
     def get_datasets(self) -> List:
         return self.datasets

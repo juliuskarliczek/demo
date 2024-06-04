@@ -20,10 +20,12 @@ class PlotTreeWidget(QTreeWidget):
             event.ignore()
 
     def dragMoveEvent(self, event):
-        #if not event.mimeData().data('DataID').isEmpty():
-        if self.itemAt(event.position().toPoint()).data(0, 1) is not None:
-            if isinstance(self.itemAt(event.position().toPoint()).data(0, 1), PlotItem):
-                event.acceptProposedAction()
+        if isinstance(self.itemAt(event.position().toPoint()), QTreeWidgetItem):
+            if self.itemAt(event.position().toPoint()).data(0, 1) is not None:
+                if isinstance(self.itemAt(event.position().toPoint()).data(0, 1), PlotItem):
+                    event.acceptProposedAction()
+                else:
+                    event.ignore()
             else:
                 event.ignore()
         else:
@@ -31,11 +33,15 @@ class PlotTreeWidget(QTreeWidget):
 
     def dropEvent(self, event):
         if not event.mimeData().data('DataID').isEmpty():
-            qds = QDataStream(event.mimeData().data('DataID'), QIODevice.OpenModeFlag.ReadOnly)
+            qds_id = QDataStream(event.mimeData().data('DataID'), QIODevice.OpenModeFlag.ReadOnly)
+            qds_type = QDataStream(event.mimeData().data('DataType'), QIODevice.OpenModeFlag.ReadOnly)
             targetItem = self.itemAt(event.position().toPoint())
 
             if isinstance(targetItem.data(0, 1), PlotItem):
-                new_plottable = PlottableItem(targetItem, [event.mimeData().text()])
+                new_plottable = PlottableItem(targetItem, [event.mimeData().text()],
+                                              qds_id.readDouble(), qds_type.readInt())
+                print("accepted id: ", qds_id.readDouble())
+                print("accepted type: ", qds_type.readInt())
                 new_plottable.setData(0, 1, new_plottable)
             elif isinstance(targetItem.data(0, 1), PlottableItem):
                 # as soon as slots for adjusting are there, here the slots can be filled

@@ -19,13 +19,20 @@ class DataTreeWidget(QTreeWidget):
         if item:
             if isinstance(item.data(0, 1), DataItem):
                 data_id = item.data(0, 1).get_data_id()
+                data_type = item.data(0, 1).get_type_num()
 
                 drag = QDrag(self)
-                itemData = QByteArray()
-                dataStream = QDataStream(itemData, QIODevice.OpenModeFlag.WriteOnly)
-                dataStream.writeDouble(data_id)
+                byteArrayID = QByteArray()
+                dataStreamID = QDataStream(byteArrayID, QIODevice.OpenModeFlag.WriteOnly)
+                dataStreamID.writeDouble(data_id)
+
+                byteArrayType = QByteArray()
+                dataStreamType = QDataStream(byteArrayType, QIODevice.OpenModeFlag.WriteOnly)
+                dataStreamType.writeInt(data_type)
+
                 mimeData = QMimeData()
-                mimeData.setData('DataID', itemData)
+                mimeData.setData('DataID', byteArrayID)
+                mimeData.setData('TypeNum', byteArrayType)
 
                 fitpage_index = self.datacollector.get_dataset_by_id(data_id).get_fitpage_index()
                 mimeData.setText("FP " + str(fitpage_index) + " " + self.currentItem().text(0))

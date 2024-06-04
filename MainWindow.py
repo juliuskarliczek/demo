@@ -51,7 +51,6 @@ def excepthook(exc_type, exc_value, exc_tb):
     print("error caught!:")
     print("error message:\n", tb)
     QtWidgets.QApplication.quit()
-    # or QtWidgets.QApplication.exit(0)
 
 sys.excepthook = excepthook
 app = QtWidgets.QApplication(sys.argv)

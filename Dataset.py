@@ -45,3 +45,14 @@ class Dataset:
             self.plotpage_index = plotpage_index
         else:
             print("no integer")
+
+    def set_x_data(self, x_data):
+        self.x_data = x_data
+
+    def set_y_data(self, y_data):
+        self.y_data = y_data
+
+    def set_y_fit(self, y_fit):
+        self.y_fit = y_fit
+
+

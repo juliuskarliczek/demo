@@ -8,9 +8,6 @@ from DataCollector import DataCollector
 from DataTreeItems import PlotPageItem, DataItem
 from PlotTreeItems import TabItem, SubTabItem, PlotItem, PlottableItem
 
-#delete this import later, only for testing
-import numpy as np
-
 
 class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
     def __init__(self, main_window):
@@ -29,6 +26,7 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         self.cmdSendToPlotpage.clicked.connect(self.onSendToPlotpage)
         self.cmdClose.clicked.connect(self.onShowDataViewer)
         self.dataTreeWidget.currentItemChanged.connect(self.updateComboboxes)
+        self.cmdRedrawCurrentItem.clicked.connect(self.redrawCurrentItem)
 
         self.plot_widget = PlotWidget(self.datacollector)
         self.data_origin_fitpage_index = None
@@ -51,14 +49,15 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
 
         datasets = self.datacollector.get_datasets()
         for i in range(len(datasets)):
-            name = "Data from Fitpage " + str(datasets[i].get_fitpage_index())
+            fitpage_index = datasets[i].get_fitpage_index()
+            name = "Data from Fitpage " + str(fitpage_index)
             data_id = datasets[i].get_data_id()
-            item = PlotPageItem(self.dataTreeWidget, [name], data_id)
+            item = PlotPageItem(self.dataTreeWidget, [name], fitpage_index, data_id)
             item.setData(0, 1, item)
-            subitem_data = DataItem(item, ["Data"], data_id, 1)
+            subitem_data = DataItem(item, ["Data"], fitpage_index, data_id, 1)
             subitem_data.setData(0, 1, subitem_data)
             if datasets[i].has_y_fit():
-                subitem_fit = DataItem(item, ["Fit"], data_id, 2)
+                subitem_fit = DataItem(item, ["Fit"], fitpage_index, data_id, 2)
                 subitem_fit.setData(0, 1, subitem_fit)
 
     def onSendToPlotpage(self):
@@ -138,23 +137,43 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         self.plotTreeWidget.clear()
         self.plotTreeWidget.blockSignals(False)
 
-        num_tabs = self.plot_widget.count()
-        tab_names = []
-        for i in range(num_tabs):
+        # iterate through all tabs from the plot widget
+        for i in range(self.plot_widget.count()):
             tab_name = self.plot_widget.tabText(i)
-            tab_names.append(tab_name)
-            tab_item = TabItem(self.plotTreeWidget, [tab_name])
+
+            fitpage_index = self.plot_widget.widget(i).get_fitpage_index()
+            tab_item = TabItem(self.plotTreeWidget, [tab_name], fitpage_index)
             tab_item.setData(0, 1, tab_item)
-            fitpage_index = int(tab_name.split()[3])
-            subtab = self.plot_widget.get_existing_subtabs_from_fitpage_index(fitpage_index)
-            figures = self.plot_widget.get_existing_figures_from_fitpage_index(fitpage_index)
+
+            subtab = self.plot_widget.get_subtabs(fitpage_index)
+            figures = self.plot_widget.get_figures(fitpage_index)
+            # iterate through all the subplots of one tab
             for j in range(subtab.count()):
-                subtab_item = SubTabItem(tab_item, [subtab.tabText(j)])
+
+                subtab_item = SubTabItem(tab_item, [subtab.tabText(j)], fitpage_index, j)
                 subtab_item.setData(0, 1, subtab_item)
+
+                # iterate through all the subplots/axes of one subtab
                 ax = subtab.figures[j].get_axes()
                 for k in range(len(ax)):
-                    plot_item = PlotItem(subtab_item, [ax[k].get_title()])
+                    plot_item = PlotItem(subtab_item, [ax[k].get_title()], fitpage_index, j, k)
                     plot_item.setData(0, 1, plot_item)
 
             #subtab.figures[0].get_axes()[0].plot(np.linspace(1, 100, 500),
                                                  #np.linspace(1, 100, 500))
+
+
+    def redrawCurrentItem(self):
+        if self.plotTreeWidget.currentItem() is not None:
+            current_data = self.plotTreeWidget.currentItem().data(0, 1)
+            if current_data is not None:
+                if isinstance(current_data, TabItem):
+                    self.plot_widget.redrawTab(current_data)
+                elif isinstance(current_data, SubTabItem):
+                    pass # redraw subtab
+                    #self.plot_widget.redrawSubtab(current_data)
+                elif isinstance(current_data, PlotItem):
+                    pass # redraw plot
+                    #self.plot_widget.redrawPlot(current_data)
+                else:
+                    pass # redrawing makes no sense for the plottable item, because the whole plot has to be replotted
