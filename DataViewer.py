@@ -27,6 +27,7 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         self.cmdClose.clicked.connect(self.onShowDataViewer)
         self.dataTreeWidget.currentItemChanged.connect(self.updateComboboxes)
         self.cmdRedrawCurrentItem.clicked.connect(self.redrawCurrentItem)
+        self.plotTreeWidget.dropSignal.connect(self.redrawAll)
 
         self.plot_widget = PlotWidget(self.datacollector)
         self.data_origin_fitpage_index = None
@@ -177,3 +178,8 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
                     #self.plot_widget.redrawPlot(current_data)
                 else:
                     pass # redrawing makes no sense for the plottable item, because the whole plot has to be replotted
+
+    def redrawAll(self):
+        if self.plotTreeWidget.topLevelItemCount() != 0:
+            for i in range(self.plotTreeWidget.topLevelItemCount()):
+                self.plot_widget.redrawTab(self.plotTreeWidget.topLevelItem(i))

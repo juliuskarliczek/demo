@@ -21,6 +21,9 @@ class DataTreeWidget(QTreeWidget):
                 data_id = item.data(0, 1).get_data_id()
                 data_type = item.data(0, 1).get_type_num()
 
+                print(data_id)
+                print(data_type)
+
                 drag = QDrag(self)
                 byteArrayID = QByteArray()
                 dataStreamID = QDataStream(byteArrayID, QIODevice.OpenModeFlag.WriteOnly)

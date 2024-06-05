@@ -52,6 +52,7 @@ def excepthook(exc_type, exc_value, exc_tb):
     print("error message:\n", tb)
     QtWidgets.QApplication.quit()
 
+
 sys.excepthook = excepthook
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()

@@ -12,7 +12,9 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_DataViewer(object):
     def setupUi(self, DataViewer):
         DataViewer.setObjectName("DataViewer")
-        DataViewer.resize(402, 501)
+        DataViewer.resize(400, 500)
+        DataViewer.setMinimumSize(QtCore.QSize(400, 500))
+        DataViewer.setMaximumSize(QtCore.QSize(400, 500))
         self.cmdSendToPlotpage = QtWidgets.QPushButton(parent=DataViewer)
         self.cmdSendToPlotpage.setGeometry(QtCore.QRect(230, 140, 101, 24))
         self.cmdSendToPlotpage.setObjectName("cmdSendToPlotpage")
@@ -43,7 +45,7 @@ class Ui_DataViewer(object):
 
     def retranslateUi(self, DataViewer):
         _translate = QtCore.QCoreApplication.translate
-        DataViewer.setWindowTitle(_translate("DataViewer", "Form"))
+        DataViewer.setWindowTitle(_translate("DataViewer", "Data Viewer"))
         self.cmdSendToPlotpage.setText(_translate("DataViewer", "Send to Plotpage"))
         self.labelSelectAnItem.setText(_translate("DataViewer", "No item selected"))
         self.cmdClose.setText(_translate("DataViewer", "Close"))
