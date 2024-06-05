@@ -8,7 +8,7 @@ class DataTreeWidget(QTreeWidget):
         super().__init__(parent=DataViewer)
         self.datacollector = datacollector
 
-        self.setGeometry(QRect(10, 10, 201, 192))
+        self.setGeometry(QRect(10, 10, 291, 212))
         self.setDragEnabled(True)
         self.setDragDropMode(QTreeWidget.DragDropMode.DragOnly)
         self.setColumnCount(1)
@@ -20,9 +20,6 @@ class DataTreeWidget(QTreeWidget):
             if isinstance(item.data(0, 1), DataItem):
                 data_id = item.data(0, 1).get_data_id()
                 data_type = item.data(0, 1).get_type_num()
-
-                print(data_id)
-                print(data_type)
 
                 drag = QDrag(self)
                 byteArrayID = QByteArray()
@@ -37,7 +34,7 @@ class DataTreeWidget(QTreeWidget):
                 mimeData.setData('DataID', byteArrayID)
                 mimeData.setData('TypeNum', byteArrayType)
 
-                fitpage_index = self.datacollector.get_dataset_by_id(data_id).get_fitpage_index()
+                fitpage_index = self.datacollector.get_data_id(data_id).get_fitpage_index()
                 mimeData.setText("FP " + str(fitpage_index) + " " + self.currentItem().text(0))
 
                 drag.setMimeData(mimeData)

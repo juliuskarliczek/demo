@@ -6,7 +6,7 @@ class PlotTreeWidget(QTreeWidget):
     dropSignal = pyqtSignal(str)
     def __init__(self, DataViewer):
         super().__init__(parent=DataViewer)
-        self.setGeometry(QRect(10, 252, 201, 192))
+        self.setGeometry(QRect(10, 232, 291, 212))
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
         self.setDragDropMode(QTreeWidget.DragDropMode.DropOnly)
@@ -32,6 +32,7 @@ class PlotTreeWidget(QTreeWidget):
             event.ignore()
 
     def dropEvent(self, event):
+        print("dropped")
         if not event.mimeData().data('DataID').isEmpty():
             qds_id = QDataStream(event.mimeData().data('DataID'), QIODevice.OpenModeFlag.ReadOnly)
             qds_type = QDataStream(event.mimeData().data('TypeNum'), QIODevice.OpenModeFlag.ReadOnly)

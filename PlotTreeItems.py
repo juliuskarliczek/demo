@@ -4,6 +4,7 @@ class TabItem(QTreeWidgetItem):
     def __init__(self, parent, name, fitpage_index):
         super().__init__(parent, name)
         self.fitpage_index = fitpage_index
+        super().setData(0, 1, self)
 
     def get_fitpage_index(self):
         return self.fitpage_index
@@ -31,7 +32,10 @@ class PlottableItem(QTreeWidgetItem):
         # type serves the same purpose as in plottreeitems - knowing if the item is a data item or a fit item
         # although this maybe does not even matter for plotting purposes, if one knows the name?
         self.type_num = type_num
+        super().setData(0, 1, self)
 
     def get_type(self):
         return self.type_num
+
+
 

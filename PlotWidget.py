@@ -13,18 +13,18 @@ class PlotWidget(QTabWidget):
     def widget(self, index) -> SubTabs:
         return super().widget(index)
 
-    def createNewTab(self, datacollector, fitpage_index):
+    def redrawTab(self, tabitem):
         # check if the tab is already existing.
         # if it is not existing: create it. otherwise: recalculate the tab
-        plot_index = datacollector.get_data_by_fitpage_index(fitpage_index).get_plotpage_index()
+        fitpage_index = tabitem.get_fitpage_index()
+        plot_index = self.datacollector.get_data_fp(fitpage_index).get_plotpage_index()
         if plot_index == -1:
-            datacollector.set_plot_index(fitpage_index, self.count())
-            self.addTab(SubTabs(datacollector, fitpage_index), "Plot for FitPage " + str(fitpage_index))
-            self.setCurrentIndex(self.count())
+            self.datacollector.set_plot_index(fitpage_index, self.count())
+            self.addTab(SubTabs(self.datacollector, tabitem), "Plot for FitPage " + str(fitpage_index))
         else:
             self.removeTab(plot_index)
-            self.insertTab(plot_index, SubTabs(datacollector, fitpage_index), "Plot for FitPage " + str(fitpage_index))
-            self.setCurrentIndex(plot_index)
+            self.insertTab(plot_index, SubTabs(self.datacollector, tabitem),
+                           "Plot for FitPage " + str(fitpage_index))
 
     def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
         plottab_index = self.datacollector.get_plotpage_index(fitpage_to)
@@ -41,9 +41,6 @@ class PlotWidget(QTabWidget):
         for i in range(self.count()):
             if fitpage_index == self.widget(i).fitpage_index:
                 return self.widget(i).figures
-
-    def redrawTab(self, tabitem):
-        print(tabitem.get_fitpage_index())
 
 
 

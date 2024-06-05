@@ -1,22 +1,44 @@
-from PyQt6 import QtWidgets
+from PyQt6.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from typing import List
 import matplotlib.figure
 
-import RandomDatasetCreator
 import numpy as np
 
-class SubTabs(QtWidgets.QTabWidget):
-    def __init__(self, datacollector, fitpage_index):
+class SubTabs(QTabWidget):
+    def __init__(self, datacollector, tabitem):
         super().__init__()
 
         self.datacollector = datacollector
-        self.fitpage_index = fitpage_index
-        self.subtabs: List[QtWidgets.QWidget] = []
-        self.figures: List[matplotlib.figure] = []
-        x_dataset = datacollector.get_x_data(fitpage_index)
-        y_dataset = datacollector.get_y_data(fitpage_index)
+        self.figures: List[List[matplotlib.figure]] = []
+        for i in range(tabitem.childCount()):
+            #add subtabs
+            subtab_widget = QWidget()
+            subtab = self.addTab(QWidget(), tabitem.child(i).text(0))
+
+            #add subplots
+            layout = QVBoxLayout()
+            figure = matplotlib.figure.Figure(figsize=(5, 5))
+            canvas = FigureCanvasQTAgg(figure)
+            layout.addWidget(canvas)
+
+            subplot_count = tabitem.child(i).childCount()
+            ax = figure.subplots(subplot_count)
+            if subplot_count <= 1:
+                ax = [ax]
+            for j in range(subplot_count):
+                ax[j].set_title(str(tabitem.child(i).child(j).text(0)))
+                for k in range(tabitem.child(i).child(j).childCount()):
+                    data = tabitem.child(i).child(j).child(k)
+                    ax[j].plot(np.linspace(0, 10, 100), np.multiply(k, np.sin(np.linspace(0, 10, 100))))
+            self.widget(i).setLayout(layout)
+            self.figures.append(figure)
+
+        '''
+        self.fitpage_index = tabitem.get_fitpage_index()
+        x_dataset = datacollector.get_x_data(self.fitpage_index)
+        y_dataset = datacollector.get_y_data(self.fitpage_index)
 
         subtab, figure = self.new_subtab([x_dataset], [y_dataset],
                                  settings={"xscale": "log", "yscale": "log",
@@ -26,8 +48,8 @@ class SubTabs(QtWidgets.QTabWidget):
         self.figures.append(figure)
         self.addTab(subtab, "Data")
 
-        if datacollector.get_data_by_fitpage_index(fitpage_index).has_y_fit():
-            y_fit = datacollector.get_y_fit_data(fitpage_index)
+        if datacollector.get_data_fp(self.fitpage_index).has_y_fit():
+            y_fit = datacollector.get_y_fit_data(self.fitpage_index)
             subtab_fit, figure_fit = self.new_subtab([x_dataset], [y_dataset, y_fit],
                                          settings={"xscale": "log", "yscale": "log",
                                                    "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
@@ -44,6 +66,7 @@ class SubTabs(QtWidgets.QTabWidget):
             self.subtabs.append(subtab_res)
             self.figures.append(figure_res)
             self.addTab(subtab_res, "Residuals")
+            '''
 
     def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):
         #from_fitpage is the fitpage that the data originates from
