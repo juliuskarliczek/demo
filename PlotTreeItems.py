@@ -1,5 +1,5 @@
 #items that are supposed to be used in the plottreewidget for checking if an item is for example a tab or a subtab
-from PyQt6.QtWidgets import QTreeWidgetItem
+from PySide6.QtWidgets import QTreeWidgetItem
 class TabItem(QTreeWidgetItem):
     def __init__(self, parent, name, fitpage_index):
         super().__init__(parent, name)
@@ -34,6 +34,8 @@ class PlottableItem(QTreeWidgetItem):
         self.type_num = type_num
         super().setData(0, 1, self)
 
+    def get_data_id(self):
+        return self.data_id
     def get_type(self):
         return self.type_num
 

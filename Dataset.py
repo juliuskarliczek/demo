@@ -12,8 +12,10 @@ class Dataset:
         self.data_id = self.generate_id(self.fitpage_index)
 
     def generate_id(self, fitpage_index):
-        new_id = float(str(fitpage_index) + str(time.time()))
-        print("generated id: ", new_id)
+        a = str(int(time.time()))
+        b = len(a)
+        new_id = int(str(fitpage_index) + a[5:b])
+        print(new_id)
         return new_id
 
     def get_data_id(self):

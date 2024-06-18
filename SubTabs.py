@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QTabWidget, QVBoxLayout
+from PySide6.QtWidgets import QWidget, QTabWidget, QVBoxLayout
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 from typing import List
@@ -11,7 +11,7 @@ class SubTabs(QTabWidget):
         super().__init__()
 
         self.datacollector = datacollector
-        self.figures: List[List[matplotlib.figure]] = []
+        self.figures: List[matplotlib.figure] = []
         for i in range(tabitem.childCount()):
             #add subtabs
             subtab_widget = QWidget()
@@ -30,43 +30,20 @@ class SubTabs(QTabWidget):
             for j in range(subplot_count):
                 ax[j].set_title(str(tabitem.child(i).child(j).text(0)))
                 for k in range(tabitem.child(i).child(j).childCount()):
-                    data = tabitem.child(i).child(j).child(k)
-                    ax[j].plot(np.linspace(0, 10, 100), np.multiply(k, np.sin(np.linspace(0, 10, 100))))
+                    data = tabitem.child(i).child(j).child(k).data(0, 1)
+                    dataset = self.datacollector.get_data_id(data.get_data_id())
+                    ax[j].plot(dataset.get_x_data(), dataset.get_y_data())
+
+            figure.tight_layout()
             self.widget(i).setLayout(layout)
             self.figures.append(figure)
 
         '''
-        self.fitpage_index = tabitem.get_fitpage_index()
-        x_dataset = datacollector.get_x_data(self.fitpage_index)
-        y_dataset = datacollector.get_y_data(self.fitpage_index)
-
-        subtab, figure = self.new_subtab([x_dataset], [y_dataset],
-                                 settings={"xscale": "log", "yscale": "log",
-                                           "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
-                                           "grid": True, "title": "data plot"})
-        self.subtabs.append(subtab)
-        self.figures.append(figure)
-        self.addTab(subtab, "Data")
-
-        if datacollector.get_data_fp(self.fitpage_index).has_y_fit():
-            y_fit = datacollector.get_y_fit_data(self.fitpage_index)
             subtab_fit, figure_fit = self.new_subtab([x_dataset], [y_dataset, y_fit],
                                          settings={"xscale": "log", "yscale": "log",
                                                    "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
                                                    "grid": True, "title": "fit plot"})
-            self.subtabs.append(subtab_fit)
-            self.figures.append(figure_fit)
-            self.addTab(subtab_fit, "Fit")
-
-            subtab_res, figure_res = self.new_subtab([x_dataset], [y_dataset, y_fit],
-                                         settings={"xscale": "log", "yscale": "log",
-                                                   "xlabel": "xdata", "ylabel": "ydata", "toolbar": True,
-                                                   "residuals": True,
-                                                   "grid": True, "title": "fit plot"})
-            self.subtabs.append(subtab_res)
-            self.figures.append(figure_res)
-            self.addTab(subtab_res, "Residuals")
-            '''
+        '''
 
     def add_dataset_to_subtab(self, from_fitpage_index, to_fitpage_index, which_subtab):
         #from_fitpage is the fitpage that the data originates from
@@ -95,8 +72,8 @@ class SubTabs(QTabWidget):
         # settings is a dict of e.g. {xlabel: 'foo', ylabel: 'bar', xscale: 'a', yscale: 'b', nrows: int, ncols: int,
         #                               toolbar: True, grid: True, title: 'title'}
         residuals_b = False
-        subtab = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout()
+        subtab = QWidget()
+        layout = QVBoxLayout()
         figure = matplotlib.figure.Figure(figsize=(5, 5))
         canvas = FigureCanvasQTAgg(figure)
         layout.addWidget(canvas)

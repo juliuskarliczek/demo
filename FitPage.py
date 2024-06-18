@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 from FitPageUI import Ui_fitPageWidget
 
 

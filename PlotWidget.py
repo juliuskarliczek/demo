@@ -1,6 +1,5 @@
-from PyQt6.QtWidgets import QTabWidget, QWidget, QVBoxLayout
+from PySide6.QtWidgets import QTabWidget, QWidget, QVBoxLayout
 from SubTabs import SubTabs
-from typing import List
 
 class PlotWidget(QTabWidget):
     def __init__(self, datacollector):

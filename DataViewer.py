@@ -1,5 +1,5 @@
-from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QTreeWidgetItem
+from PySide6 import QtWidgets
+
 from DataViewerUI import Ui_DataViewer
 from PlotWidget import PlotWidget
 from DataTreeWidget import DataTreeWidget
@@ -7,8 +7,7 @@ from PlotTreeWidget import PlotTreeWidget
 from DataCollector import DataCollector
 from DataTreeItems import PlotPageItem, DataItem
 from PlotTreeItems import TabItem, SubTabItem, PlotItem, PlottableItem
-
-from time import sleep
+from PlotModifiers import ModifierLinecolor, ModifierLinestyle, ModifierColormap, PlotModifier
 
 
 class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
@@ -25,9 +24,11 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
 
         self.cmdSendToPlotpage.clicked.connect(self.onSendToPlotpage)
         self.cmdClose.clicked.connect(self.onShowDataViewer)
+        self.cmdAddModifier.clicked.connect(self.onAddModifier)
         self.dataTreeWidget.currentItemChanged.connect(self.updateComboboxes)
         self.plotTreeWidget.dropSignal.connect(self.redrawAll)
 
+        self.setupMofifierCombobox()
         self.plot_widget = PlotWidget(self.datacollector)
         self.data_origin_fitpage_index = None
 
@@ -135,7 +136,6 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         # if one is found - remove from tree
         for i in range(self.plotTreeWidget.topLevelItemCount()):
             if fitpage_index == self.plotTreeWidget.topLevelItem(i).data(0, 1).get_fitpage_index():
-                print(f"found existing item {i}")
                 self.plotTreeWidget.takeTopLevelItem(i)
 
         #add tab
@@ -173,4 +173,23 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         if self.plotTreeWidget.topLevelItemCount() != 0:
             for i in range(self.plotTreeWidget.topLevelItemCount()):
                 self.plot_widget.redrawTab(self.plotTreeWidget.topLevelItem(i))
+
+    def onAddModifier(self):
+        currentmodifier = self.comboBoxModifier.currentText()
+        print(currentmodifier)
+        mod_type = currentmodifier.split(":")[1]
+        mod_rule = mod_type.split("=")[1]
+        print(mod_type)
+        print(mod_rule)
+
+    def setupMofifierCombobox(self):
+        self.comboBoxModifier.addItem("Modifier:color=r")
+        self.comboBoxModifier.addItem("Modifier:color=g")
+        self.comboBoxModifier.addItem("Modifier:color=b")
+        self.comboBoxModifier.addItem("Modifier:linestyle=solid")
+        self.comboBoxModifier.addItem("Modifier:linestyle=dashed")
+        self.comboBoxModifier.addItem("Modifier:linestyle=dotted")
+        self.comboBoxModifier.addItem("Modifier:scheme=jet")
+        self.comboBoxModifier.addItem("Modifier:scheme=spring")
+        self.comboBoxModifier.addItem("Modifier:scheme=gray")
 

@@ -1,6 +1,7 @@
 import sys
+import os
 import traceback
-from PyQt6 import QtWidgets
+from PySide6 import QtWidgets
 
 from MainWindowUI import Ui_MainWindow
 from FitPage import FitPage
@@ -44,6 +45,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.fittingTabs.setCurrentIndex(self.fitPageCounter-1)
 
     def closeEvent(self, event):
+        QtWidgets.QApplication.closeAllWindows()
         sys.exit()
 
 def excepthook(exc_type, exc_value, exc_tb):

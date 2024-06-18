@@ -1,5 +1,4 @@
-from PyQt6.QtWidgets import QTreeWidgetItem
-
+from PySide6.QtWidgets import QTreeWidgetItem
 
 class PlotPageItem(QTreeWidgetItem):
     def __init__(self, parent, name, fitpage_index, data_id):
@@ -7,6 +6,9 @@ class PlotPageItem(QTreeWidgetItem):
         self.fitpage_index = fitpage_index
         self.data_id = data_id
         super().setData(0, 1, self)
+
+    def get_fitpage_index(self):
+        return self.fitpage_index
 
     def get_data_id(self):
         return self.data_id
@@ -20,6 +22,4 @@ class DataItem(PlotPageItem):
 
     def get_type_num(self):
         return self.type_num
-
-
 

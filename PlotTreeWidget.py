@@ -1,51 +1,43 @@
-from PyQt6.QtWidgets import QTreeWidget, QTreeWidgetItem
-from PyQt6.QtCore import QMimeData, QRect, QDataStream, QIODevice, pyqtSignal
+from PySide6.QtWidgets import QTreeWidget
+from PySide6.QtCore import QRect, Signal
 from PlotTreeItems import TabItem, SubTabItem, PlotItem, PlottableItem
 
 class PlotTreeWidget(QTreeWidget):
-    dropSignal = pyqtSignal(str)
+    dropSignal = Signal()
     def __init__(self, DataViewer):
         super().__init__(parent=DataViewer)
-        self.setGeometry(QRect(10, 232, 291, 212))
+        self.setGeometry(QRect(10, 332, 391, 312))
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
-        self.setDragDropMode(QTreeWidget.DragDropMode.DropOnly)
         self.setColumnCount(1)
         self.setHeaderLabels(["Plot Names"])
 
     def dragEnterEvent(self, event):
-        if not event.mimeData().data('DataID').isEmpty():
-            event.acceptProposedAction()
-        else:
-            event.ignore()
+        event.acceptProposedAction()
+
 
     def dragMoveEvent(self, event):
-        if isinstance(self.itemAt(event.position().toPoint()), QTreeWidgetItem):
-            if self.itemAt(event.position().toPoint()).data(0, 1) is not None:
-                if isinstance(self.itemAt(event.position().toPoint()).data(0, 1), PlotItem):
-                    event.acceptProposedAction()
-                else:
-                    event.ignore()
-            else:
-                event.ignore()
-        else:
-            event.ignore()
+        event.acceptProposedAction()
 
     def dropEvent(self, event):
-        print("dropped")
-        if not event.mimeData().data('DataID').isEmpty():
-            qds_id = QDataStream(event.mimeData().data('DataID'), QIODevice.OpenModeFlag.ReadOnly)
-            qds_type = QDataStream(event.mimeData().data('TypeNum'), QIODevice.OpenModeFlag.ReadOnly)
+        if event.mimeData().data('ID'):
+            data_id = event.mimeData().data('ID').data()
+            data_type = event.mimeData().data('Type').data()
+            print(data_id)
+            print(data_type)
+
             targetItem = self.itemAt(event.position().toPoint())
             if isinstance(targetItem.data(0, 1), PlotItem):
-                new_plottable = PlottableItem(targetItem, [event.mimeData().text()],
-                                              qds_id.readDouble(), qds_type.readInt())
-                new_plottable.setData(0, 1, new_plottable)
+                new_plottable = PlottableItem(targetItem, [str(data_id)],
+                                              int(data_id), int(data_type))
+
+                self.dropSignal.emit()
+                event.acceptProposedAction()
             elif isinstance(targetItem.data(0, 1), PlottableItem):
                 # as soon as slots for adjusting are there, the slots can be filled in here
                 pass
-            self.dropSignal.emit("hey")
-            event.acceptProposedAction()
+            else:
+                event.ignore()
         else:
             event.ignore()
 
