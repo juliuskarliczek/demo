@@ -20,12 +20,9 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
 
         self.dataTreeWidget = DataTreeWidget(self, self.datacollector)
         self.plotTreeWidget = PlotTreeWidget(self)
-        self.labelSelectAnItem.hide()
 
-        self.cmdSendToPlotpage.clicked.connect(self.onSendToPlotpage)
         self.cmdClose.clicked.connect(self.onShowDataViewer)
         self.cmdAddModifier.clicked.connect(self.onAddModifier)
-        self.dataTreeWidget.currentItemChanged.connect(self.updateComboboxes)
         self.plotTreeWidget.dropSignal.connect(self.redrawAll)
 
         self.setupMofifierCombobox()
@@ -59,66 +56,6 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
 
         self.dataTreeWidget.expandAll()
 
-    def onSendToPlotpage(self):
-        current_row_item = self.dataTreeWidget.currentItem()
-        # check if any row is selected
-        if current_row_item is not None:
-            self.labelSelectAnItem.hide()
-
-            target_fitpage_index = None
-            subtab_index = None
-            # check if there is a selection in the comboboxes. cant get the text otherwise
-            if self.comboBoxTargetFitpage.currentIndex() != -1:
-                target_fitpage_index = int(self.comboBoxTargetFitpage.currentText())
-            if self.comboBoxTargetSubtab.currentIndex() != -1:
-                subtab_index = int(self.comboBoxTargetSubtab.currentIndex())
-
-            # check if a target fitpage is selected in the the combobox
-            if target_fitpage_index is not None:
-
-                #check if both fitpages already exist. if only calculate button was used,
-                # this is not necessarily the case. create them if they are not created yet.
-                if self.plot_widget.widget(target_fitpage_index) is not None:
-                    if self.plot_widget.widget(self.data_origin_fitpage_index) is not None:
-                        self.plot_widget.send_data_to_subtab(self.data_origin_fitpage_index, target_fitpage_index, subtab_index)
-                    else:
-                        self.create_plot(self.data_origin_fitpage_index)
-                        self.plot_widget.send_data_to_subtab(self.data_origin_fitpage_index, target_fitpage_index, subtab_index)
-                else:
-                    self.create_plot(target_fitpage_index)
-                    self.plot_widget.send_data_to_subtab(self.data_origin_fitpage_index, target_fitpage_index,
-                                                         subtab_index)
-
-                self.plot_widget.activateWindow()
-
-        else:
-            # show warning label if no item is selected
-            self.labelSelectAnItem.show()
-
-    def updateComboboxes(self):
-        # clear the comboboxes so that for data and fit subitems no data can be sent
-        self.comboBoxTargetFitpage.clear()
-        self.comboBoxTargetSubtab.clear()
-
-        # check if a toplevel item is selected
-        if isinstance(self.dataTreeWidget.currentItem().data(0, 1), PlotPageItem):
-            data_id = self.dataTreeWidget.currentItem().data(0, 1).get_data_id()
-            self.data_origin_fitpage_index = int(self.datacollector.get_data_id(data_id).get_fitpage_index())
-
-            # iterate through datasets and get information from tabs and subtabs
-            # for every tab besides the already selected one
-            for i in range(len(self.datacollector.datasets)):
-                if self.datacollector.datasets[i].get_fitpage_index() != self.data_origin_fitpage_index:
-                    # target fitpage combobox updating
-                    self.comboBoxTargetFitpage.addItem(str(self.datacollector.datasets[i].get_fitpage_index()))
-                    # subtabs combobox updating
-                    self.comboBoxTargetSubtab.addItem("Data")
-                    if self.datacollector.datasets[i].has_y_fit():
-                        self.comboBoxTargetSubtab.addItem("Fit")
-                        self.comboBoxTargetSubtab.addItem("Residuals")
-                else:
-                    continue
-
     def onShowDataViewer(self):
         if self.isVisible():
             self.hide()
@@ -135,8 +72,9 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         # check if an item for the fitpage index already exists
         # if one is found - remove from tree
         for i in range(self.plotTreeWidget.topLevelItemCount()):
-            if fitpage_index == self.plotTreeWidget.topLevelItem(i).data(0, 1).get_fitpage_index():
-                self.plotTreeWidget.takeTopLevelItem(i)
+            if isinstance(self.plotTreeWidget.topLevelItem(i), TabItem):
+                if fitpage_index == self.plotTreeWidget.topLevelItem(i).data(0, 1).get_fitpage_index():
+                    self.plotTreeWidget.takeTopLevelItem(i)
 
         #add tab
         tab_name = "Plot for Fitpage " + str(fitpage_index)
@@ -146,7 +84,7 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
         #add data child and corresponding plot children in every case
         subtab_data = SubTabItem(tab_item, ["Data"], fitpage_index, 0)
         subplot_data = PlotItem(subtab_data, ["Data Plot"], fitpage_index, 0, 0)
-        plottable_data = PlottableItem(subplot_data, ["Plottable Data"],
+        plottable_data = PlottableItem(subplot_data, [str(self.datacollector.get_data_fp(fitpage_index).get_data_id())],
                                        self.datacollector.get_data_fp(fitpage_index).get_data_id(), 1)
         #add fit and residuals in case it was generated
         if self.datacollector.get_data_fp(fitpage_index).has_y_fit():
@@ -172,24 +110,25 @@ class DataViewer(QtWidgets.QWidget, Ui_DataViewer):
     def redrawAll(self):
         if self.plotTreeWidget.topLevelItemCount() != 0:
             for i in range(self.plotTreeWidget.topLevelItemCount()):
-                self.plot_widget.redrawTab(self.plotTreeWidget.topLevelItem(i))
+                if isinstance(self.plotTreeWidget.topLevelItem(i).data(0, 1), TabItem):
+                    self.plot_widget.redrawTab(self.plotTreeWidget.topLevelItem(i))
 
     def onAddModifier(self):
         currentmodifier = self.comboBoxModifier.currentText()
-        print(currentmodifier)
-        mod_type = currentmodifier.split(":")[1]
-        mod_rule = mod_type.split("=")[1]
-        print(mod_type)
-        print(mod_rule)
-
+        if 'color' in currentmodifier:
+            mod = ModifierLinecolor(self.plotTreeWidget, [currentmodifier])
+        if 'linestyle' in currentmodifier:
+            mod = ModifierLinestyle(self.plotTreeWidget, [currentmodifier])
+        if 'scheme' in currentmodifier:
+            mod = ModifierColormap(self.plotTreeWidget, [currentmodifier])
     def setupMofifierCombobox(self):
-        self.comboBoxModifier.addItem("Modifier:color=r")
-        self.comboBoxModifier.addItem("Modifier:color=g")
-        self.comboBoxModifier.addItem("Modifier:color=b")
-        self.comboBoxModifier.addItem("Modifier:linestyle=solid")
-        self.comboBoxModifier.addItem("Modifier:linestyle=dashed")
-        self.comboBoxModifier.addItem("Modifier:linestyle=dotted")
-        self.comboBoxModifier.addItem("Modifier:scheme=jet")
-        self.comboBoxModifier.addItem("Modifier:scheme=spring")
-        self.comboBoxModifier.addItem("Modifier:scheme=gray")
+        self.comboBoxModifier.addItem("color=r")
+        self.comboBoxModifier.addItem("color=g")
+        self.comboBoxModifier.addItem("color=b")
+        self.comboBoxModifier.addItem("linestyle=solid")
+        self.comboBoxModifier.addItem("linestyle=dashed")
+        self.comboBoxModifier.addItem("linestyle=dotted")
+        self.comboBoxModifier.addItem("scheme=jet")
+        self.comboBoxModifier.addItem("scheme=spring")
+        self.comboBoxModifier.addItem("scheme=gray")
 

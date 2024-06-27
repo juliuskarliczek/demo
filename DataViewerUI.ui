@@ -25,32 +25,6 @@
   <property name="windowTitle">
    <string>Data Viewer</string>
   </property>
-  <widget class="QPushButton" name="cmdSendToPlotpage">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>130</y>
-     <width>161</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Send to Plotpage</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelSelectAnItem">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>160</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>No item selected</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="cmdClose">
    <property name="geometry">
     <rect>
@@ -62,52 +36,6 @@
    </property>
    <property name="text">
     <string>Close</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBoxTargetFitpage">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>30</y>
-     <width>161</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelSendToFitpage">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>10</y>
-     <width>151</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Send to Plot from Fitpage...</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="labelSubtab">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>50</y>
-     <width>151</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Display in Subtab...</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBoxTargetSubtab">
-   <property name="geometry">
-    <rect>
-     <x>530</x>
-     <y>70</y>
-     <width>161</width>
-     <height>22</height>
-    </rect>
    </property>
   </widget>
   <widget class="QComboBox" name="comboBoxModifier">

@@ -25,11 +25,7 @@ class PlotWidget(QTabWidget):
             self.insertTab(plot_index, SubTabs(self.datacollector, tabitem),
                            "Plot for FitPage " + str(fitpage_index))
 
-    def send_data_to_subtab(self, fitpage_from, fitpage_to, subtab_index):
-        plottab_index = self.datacollector.get_plotpage_index(fitpage_to)
-        self.widget(plottab_index).add_dataset_to_subtab(fitpage_from, fitpage_to, subtab_index)
-        self.setCurrentIndex(plottab_index)
-        self.activateWindow()
+
 
     def get_subtabs(self, fitpage_index):
         for i in range(self.count()):

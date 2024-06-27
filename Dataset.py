@@ -15,7 +15,6 @@ class Dataset:
         a = str(int(time.time()))
         b = len(a)
         new_id = int(str(fitpage_index) + a[5:b])
-        print(new_id)
         return new_id
 
     def get_data_id(self):
@@ -34,7 +33,7 @@ class Dataset:
         return self.y_fit
 
     def has_y_fit(self):
-        if not self.y_fit:
+        if self.y_fit.size == 0:
             return False
         else:
             return True

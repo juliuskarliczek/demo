@@ -145,6 +145,19 @@
     <string>Create Fit for generated Data</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="checkBox2dData">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>40</y>
+     <width>171</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Generate 2D data</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

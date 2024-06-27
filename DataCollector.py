@@ -15,7 +15,6 @@ class DataCollector:
         for i in range(len(self.datasets)):
             if self.datasets[i].get_fitpage_index() == fitpage_index:
                 existing_dataset_index = i
-
         if existing_dataset_index == -1:
             # create new dataset in case it does not already exist
             x_data, y_data, y_fit = self.simulate_data(main_window, fitpage_index, create_fit)

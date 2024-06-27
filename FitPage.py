@@ -23,6 +23,9 @@ class FitPage(QtWidgets.QWidget, Ui_fitPageWidget):
     def get_checkbox_fit(self):
         return self.checkBoxCreateFit.isChecked()
 
+    def get_checkbox_2d(self):
+        return self.checkBox2dData.isChecked()
+
     def index_changed(self, selected_item):
         if selected_item == 0:
             self.doubleSpinBox_height.setDisabled(True)
